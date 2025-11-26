@@ -93,6 +93,18 @@ export const translations = {
     whyPremium: 'Why Go Premium?',
     whyPremiumText: 'In emergency situations, every second counts. Premium membership ensures you get the fastest possible response when you need help the most.',
     
+    // Sponsored Ads Screen
+    sponsoredAds: 'Sponsored Ads',
+    sponsoredAdsSubtitle: 'Our trusted partners supporting Quick Fix',
+    sponsored: 'Sponsored',
+    supportingOurApp: 'Supporting Our App',
+    supportingOurAppText: 'These partnerships help us keep Quick Fix free and continuously improve our emergency rescue services.',
+    gasStations: 'Gas Stations',
+    carServices: 'Car Services',
+    learnMore: 'Learn More',
+    becomeAPartner: 'Become a Partner',
+    becomeAPartnerText: 'Interested in partnering with Quick Fix? Contact us to reach thousands of users across Egypt.',
+    
     // Tab Labels
     home: 'Home',
   },
@@ -188,6 +200,18 @@ export const translations = {
     managePremium: 'إدارة الاشتراك',
     whyPremium: 'لماذا بريميوم؟',
     whyPremiumText: 'في حالات الطوارئ، كل ثانية مهمة. عضوية بريميوم تضمن لك الحصول على أسرع استجابة ممكنة عندما تحتاج إلى المساعدة أكثر.',
+    
+    // Sponsored Ads Screen
+    sponsoredAds: 'إعلانات مدعومة',
+    sponsoredAdsSubtitle: 'شركاؤنا الموثوقون الداعمون للإصلاح السريع',
+    sponsored: 'مدعوم',
+    supportingOurApp: 'دعم تطبيقنا',
+    supportingOurAppText: 'تساعدنا هذه الشراكات في الحفاظ على الإصلاح السريع مجانياً وتحسين خدمات الإنقاذ الطارئ بشكل مستمر.',
+    gasStations: 'محطات الوقود',
+    carServices: 'خدمات السيارات',
+    learnMore: 'اعرف المزيد',
+    becomeAPartner: 'كن شريكاً',
+    becomeAPartnerText: 'هل أنت مهتم بالشراكة مع الإصلاح السريع؟ اتصل بنا للوصول إلى آلاف المستخدمين في جميع أنحاء مصر.',
     
     // Tab Labels
     home: 'الرئيسية',

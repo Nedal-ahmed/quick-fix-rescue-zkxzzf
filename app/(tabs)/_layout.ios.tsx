@@ -48,6 +48,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="sponsored-ads"
+        options={{
+          title: t('sponsoredAds'),
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              ios_icon_name="megaphone.fill"
+              android_material_icon_name="campaign"
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: t('profile'),

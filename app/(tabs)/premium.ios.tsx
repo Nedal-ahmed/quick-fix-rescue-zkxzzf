@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,40 +8,159 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useStripe, CardField } from '@stripe/stripe-react-native';
+import { supabase } from '@/app/integrations/supabase/client';
 
 export default function PremiumScreen() {
   const { t, isRTL } = useLanguage();
-  const [isPremium, setIsPremium] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
+  const { subscription, plans, loading, isPremium, createSubscription, cancelSubscription, refreshSubscription } = useSubscription();
+  const { confirmPayment } = useStripe();
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cardComplete, setCardComplete] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleSubscribe = () => {
-    console.log('Subscribe to premium:', selectedPlan);
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setIsLoggedIn(!!user);
+  };
+
+  const handleSubscribe = async () => {
+    if (!isLoggedIn) {
+      Alert.alert(
+        t('error'),
+        'You must be logged in to subscribe. Please create an account or sign in first.',
+        [{ text: t('ok') }]
+      );
+      return;
+    }
+
+    if (!selectedPlanId) {
+      Alert.alert(t('error'), 'Please select a plan', [{ text: t('ok') }]);
+      return;
+    }
+
+    if (!cardComplete) {
+      Alert.alert(t('error'), 'Please enter valid card details', [{ text: t('ok') }]);
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      console.log('Starting subscription process for plan:', selectedPlanId);
+
+      // Create subscription and get client secret
+      const { clientSecret, subscriptionId } = await createSubscription(selectedPlanId);
+
+      if (!clientSecret) {
+        throw new Error('Failed to get payment client secret');
+      }
+
+      console.log('Got client secret, confirming payment...');
+
+      // Confirm payment with Stripe
+      const { error, paymentIntent } = await confirmPayment(clientSecret, {
+        paymentMethodType: 'Card',
+      });
+
+      if (error) {
+        console.error('Payment confirmation error:', error);
+        throw new Error(error.message);
+      }
+
+      console.log('Payment confirmed:', paymentIntent?.status);
+
+      // Refresh subscription data
+      await refreshSubscription();
+
+      Alert.alert(
+        t('success') || 'Success!',
+        'Your subscription has been activated! You now have access to all premium features.',
+        [{ text: t('ok') }]
+      );
+    } catch (error: any) {
+      console.error('Subscription error:', error);
+      Alert.alert(
+        t('error'),
+        error.message || 'Failed to process subscription. Please try again.',
+        [{ text: t('ok') }]
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleManageSubscription = () => {
     Alert.alert(
-      t('subscribeToPremium'),
-      `You have selected the ${selectedPlan} plan. In a production app, this would integrate with a payment provider like Stripe or RevenueCat.`,
+      t('managePremium'),
+      'What would you like to do?',
       [
         {
-          text: t('ok'),
-          onPress: () => {
-            setIsPremium(true);
-          },
+          text: 'Cancel Subscription',
+          style: 'destructive',
+          onPress: handleCancelSubscription,
+        },
+        {
+          text: t('cancel'),
+          style: 'cancel',
         },
       ]
     );
   };
 
-  const handleManageSubscription = () => {
-    console.log('Manage subscription');
+  const handleCancelSubscription = () => {
     Alert.alert(
-      t('managePremium'),
-      'In a production app, this would allow you to manage your subscription settings.',
-      [{ text: t('ok') }]
+      'Cancel Subscription',
+      'Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.',
+      [
+        {
+          text: 'Yes, Cancel',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setIsProcessing(true);
+              await cancelSubscription(false);
+              Alert.alert(
+                'Subscription Canceled',
+                'Your subscription will remain active until the end of your billing period.',
+                [{ text: t('ok') }]
+              );
+            } catch (error: any) {
+              Alert.alert(t('error'), error.message, [{ text: t('ok') }]);
+            } finally {
+              setIsProcessing(false);
+            }
+          },
+        },
+        {
+          text: t('cancel'),
+          style: 'cancel',
+        },
+      ]
     );
   };
+
+  const monthlyPlan = plans.find(p => p.interval === 'month');
+  const yearlyPlan = plans.find(p => p.interval === 'year');
+
+  if (loading && !plans.length) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.loadingText}>Loading subscription plans...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -73,6 +192,20 @@ export default function PremiumScreen() {
           />
           <Text style={[styles.premiumBadgeText, isRTL && styles.rtlText]}>
             {t('alreadyPremium')}
+          </Text>
+        </View>
+      )}
+
+      {subscription?.cancel_at_period_end && (
+        <View style={styles.warningBadge}>
+          <IconSymbol
+            ios_icon_name="exclamationmark.triangle.fill"
+            android_material_icon_name="warning"
+            size={24}
+            color={colors.accent}
+          />
+          <Text style={[styles.warningBadgeText, isRTL && styles.rtlText]}>
+            Subscription will end on {new Date(subscription.current_period_end).toLocaleDateString()}
           </Text>
         </View>
       )}
@@ -200,72 +333,119 @@ export default function PremiumScreen() {
           <View style={styles.card}>
             <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('pricing')}</Text>
 
-            <TouchableOpacity
-              style={[
-                styles.planCard,
-                selectedPlan === 'monthly' && styles.selectedPlanCard,
-              ]}
-              onPress={() => setSelectedPlan('monthly')}
-            >
-              <View style={styles.planHeader}>
-                <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
-                  {t('monthlyPlan')}
-                </Text>
-                {selectedPlan === 'monthly' && (
-                  <IconSymbol
-                    ios_icon_name="checkmark.circle.fill"
-                    android_material_icon_name="check-circle"
-                    size={24}
-                    color={colors.primary}
-                  />
-                )}
-              </View>
-              <Text style={[styles.planPrice, isRTL && styles.rtlText]}>{t('perMonth')}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.planCard,
-                selectedPlan === 'yearly' && styles.selectedPlanCard,
-              ]}
-              onPress={() => setSelectedPlan('yearly')}
-            >
-              <View style={styles.planHeader}>
-                <View>
+            {monthlyPlan && (
+              <TouchableOpacity
+                style={[
+                  styles.planCard,
+                  selectedPlanId === monthlyPlan.id && styles.selectedPlanCard,
+                ]}
+                onPress={() => setSelectedPlanId(monthlyPlan.id)}
+              >
+                <View style={styles.planHeader}>
                   <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
-                    {t('yearlyPlan')}
+                    {t('monthlyPlan')}
                   </Text>
-                  <Text style={[styles.saveBadge, isRTL && styles.rtlText]}>
-                    {t('save2Months')}
-                  </Text>
+                  {selectedPlanId === monthlyPlan.id && (
+                    <IconSymbol
+                      ios_icon_name="checkmark.circle.fill"
+                      android_material_icon_name="check-circle"
+                      size={24}
+                      color={colors.primary}
+                    />
+                  )}
                 </View>
-                {selectedPlan === 'yearly' && (
-                  <IconSymbol
-                    ios_icon_name="checkmark.circle.fill"
-                    android_material_icon_name="check-circle"
-                    size={24}
-                    color={colors.primary}
-                  />
-                )}
-              </View>
-              <Text style={[styles.planPrice, isRTL && styles.rtlText]}>{t('perYear')}</Text>
-            </TouchableOpacity>
+                <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
+                  {monthlyPlan.price_amount / 100} {monthlyPlan.price_currency.toUpperCase()}/month
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {yearlyPlan && (
+              <TouchableOpacity
+                style={[
+                  styles.planCard,
+                  selectedPlanId === yearlyPlan.id && styles.selectedPlanCard,
+                ]}
+                onPress={() => setSelectedPlanId(yearlyPlan.id)}
+              >
+                <View style={styles.planHeader}>
+                  <View>
+                    <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
+                      {t('yearlyPlan')}
+                    </Text>
+                    <Text style={[styles.saveBadge, isRTL && styles.rtlText]}>
+                      {t('save2Months')}
+                    </Text>
+                  </View>
+                  {selectedPlanId === yearlyPlan.id && (
+                    <IconSymbol
+                      ios_icon_name="checkmark.circle.fill"
+                      android_material_icon_name="check-circle"
+                      size={24}
+                      color={colors.primary}
+                    />
+                  )}
+                </View>
+                <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
+                  {yearlyPlan.price_amount / 100} {yearlyPlan.price_currency.toUpperCase()}/year
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
-          <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
-            <IconSymbol
-              ios_icon_name="crown.fill"
-              android_material_icon_name="workspace-premium"
-              size={24}
-              color={colors.card}
+          <View style={styles.card}>
+            <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Payment Details</Text>
+            <Text style={[styles.cardSubtitle, isRTL && styles.rtlText]}>
+              Enter your card information (Test Mode)
+            </Text>
+            <CardField
+              postalCodeEnabled={false}
+              placeholders={{
+                number: '4242 4242 4242 4242',
+              }}
+              cardStyle={{
+                backgroundColor: colors.background,
+                textColor: colors.text,
+                borderRadius: 8,
+              }}
+              style={styles.cardField}
+              onCardChange={(cardDetails) => {
+                setCardComplete(cardDetails.complete);
+              }}
             />
-            <Text style={styles.subscribeButtonText}>{t('subscribeToPremium')}</Text>
+            <Text style={[styles.testCardInfo, isRTL && styles.rtlText]}>
+              Test card: 4242 4242 4242 4242 | Any future date | Any CVC
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.subscribeButton, (isProcessing || !selectedPlanId || !cardComplete) && styles.disabledButton]}
+            onPress={handleSubscribe}
+            disabled={isProcessing || !selectedPlanId || !cardComplete}
+          >
+            {isProcessing ? (
+              <ActivityIndicator color={colors.card} />
+            ) : (
+              <>
+                <IconSymbol
+                  ios_icon_name="crown.fill"
+                  android_material_icon_name="workspace-premium"
+                  size={24}
+                  color={colors.card}
+                />
+                <Text style={styles.subscribeButtonText}>{t('subscribeToPremium')}</Text>
+              </>
+            )}
           </TouchableOpacity>
         </>
       )}
 
-      {isPremium && (
-        <TouchableOpacity style={styles.manageButton} onPress={handleManageSubscription}>
+      {isPremium && !subscription?.cancel_at_period_end && (
+        <TouchableOpacity
+          style={styles.manageButton}
+          onPress={handleManageSubscription}
+          disabled={isProcessing}
+        >
           <IconSymbol
             ios_icon_name="gearshape.fill"
             android_material_icon_name="settings"
@@ -293,6 +473,17 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 120,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: colors.textSecondary,
   },
   header: {
     alignItems: 'center',
@@ -340,6 +531,22 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginLeft: 8,
   },
+  warningBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFF3CD',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  warningBadgeText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#856404',
+    marginLeft: 8,
+    flex: 1,
+  },
   card: {
     backgroundColor: colors.card,
     borderRadius: 16,
@@ -357,6 +564,11 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.text,
     marginBottom: 16,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    marginBottom: 12,
   },
   cardText: {
     fontSize: 14,
@@ -429,6 +641,17 @@ const styles = StyleSheet.create({
     color: colors.success,
     marginTop: 4,
   },
+  cardField: {
+    width: '100%',
+    height: 50,
+    marginVertical: 12,
+  },
+  testCardInfo: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    marginTop: 8,
+  },
   subscribeButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -442,6 +665,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   subscribeButtonText: {
     color: colors.card,

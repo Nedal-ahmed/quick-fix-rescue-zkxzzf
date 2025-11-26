@@ -15,6 +15,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
  * Universal PremiumScreen Component
  * This is the fallback component that works on all platforms.
  * Platform-specific implementations are in premium.native.tsx and premium.web.tsx
+ * 
+ * Note: This file should never be reached on native platforms as premium.native.tsx
+ * will be used instead. This is only for web fallback.
  */
 export default function PremiumScreen() {
   const { t, isRTL } = useLanguage();

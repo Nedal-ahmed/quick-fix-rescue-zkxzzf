@@ -1,3 +1,4 @@
+
 {
   "expo": {
     "name": "Quick Fix",
@@ -56,6 +57,5 @@
     "extra": {
       "router": {}
     }
-  },
-  "scheme": "Quick Fix"
+  }
 }

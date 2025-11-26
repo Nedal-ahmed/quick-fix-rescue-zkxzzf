@@ -19,11 +19,11 @@ config.resolver = {
   sourceExts: [...(config.resolver?.sourceExts || [])],
   platforms: ['ios', 'android', 'web', 'native'],
   resolveRequest: (context, moduleName, platform) => {
-    // Block Stripe imports on web
+    // Block Stripe imports on web by returning a mock module
     if (platform === 'web' && moduleName.includes('@stripe/stripe-react-native')) {
-      // Return a mock module path or throw an error
       return {
-        type: 'empty',
+        type: 'sourceFile',
+        filePath: path.resolve(__dirname, 'app/mocks/stripe-mock.js'),
       };
     }
     

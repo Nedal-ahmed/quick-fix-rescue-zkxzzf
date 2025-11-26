@@ -166,7 +166,12 @@ export default function HomeScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
+          <Image
+            source={require('@/assets/images/6bd4fef3-748f-40f9-8634-91fd29f4c449.png')}
+            style={styles.loadingLogo}
+            resizeMode="contain"
+          />
+          <ActivityIndicator size="large" color={colors.primary} style={styles.loadingSpinner} />
           <Text style={[styles.loadingText, isRTL && styles.rtlText]}>
             {t('gettingLocation')}
           </Text>
@@ -198,14 +203,11 @@ export default function HomeScreen() {
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <View style={styles.logoContainer}>
-          <View style={styles.logoPlaceholder}>
-            <IconSymbol
-              ios_icon_name="cross.case.fill"
-              android_material_icon_name="local-hospital"
-              size={48}
-              color={colors.card}
-            />
-          </View>
+          <Image
+            source={require('@/assets/images/6bd4fef3-748f-40f9-8634-91fd29f4c449.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
         </View>
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('quickFix')}</Text>
         <Text style={[styles.subtitle, isRTL && styles.rtlText]}>
@@ -395,6 +397,14 @@ const styles = StyleSheet.create({
   loadingContainer: {
     alignItems: 'center',
   },
+  loadingLogo: {
+    width: 120,
+    height: 120,
+    marginBottom: 20,
+  },
+  loadingSpinner: {
+    marginVertical: 16,
+  },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
@@ -432,16 +442,15 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: 16,
-  },
-  logoPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0px 8px 24px rgba(41, 98, 255, 0.3)',
+    boxShadow: '0px 8px 24px rgba(41, 98, 255, 0.2)',
     elevation: 8,
+    borderRadius: 28,
+    backgroundColor: colors.card,
+    padding: 8,
+  },
+  logo: {
+    width: 120,
+    height: 120,
   },
   title: {
     fontSize: 36,

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
+  Image,
 } from 'react-native';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
@@ -46,10 +47,17 @@ export default function PremiumScreen() {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('@/assets/images/6bd4fef3-748f-40f9-8634-91fd29f4c449.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
         <IconSymbol
           ios_icon_name="crown.fill"
           android_material_icon_name="workspace-premium"
-          size={80}
+          size={60}
           color={colors.accent}
         />
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('upgradeToPremium')}</Text>
@@ -74,12 +82,14 @@ export default function PremiumScreen() {
         <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('premiumFeatures')}</Text>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="bolt.fill"
-            android_material_icon_name="bolt"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="bolt.fill"
+              android_material_icon_name="bolt"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('priorityHelp')}
@@ -91,12 +101,14 @@ export default function PremiumScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="timer"
-            android_material_icon_name="schedule"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="timer"
+              android_material_icon_name="schedule"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('fasterResponse')}
@@ -108,12 +120,14 @@ export default function PremiumScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="person.fill.checkmark"
-            android_material_icon_name="support-agent"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="person.fill.checkmark"
+              android_material_icon_name="support-agent"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('dedicatedSupport')}
@@ -125,12 +139,14 @@ export default function PremiumScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="location.fill"
-            android_material_icon_name="my-location"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="location.fill"
+              android_material_icon_name="my-location"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('advancedTracking')}
@@ -142,12 +158,14 @@ export default function PremiumScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="wifi.slash"
-            android_material_icon_name="wifi-off"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="wifi.slash"
+              android_material_icon_name="wifi-off"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('offlineMode')}
@@ -159,12 +177,14 @@ export default function PremiumScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="person.2.fill"
-            android_material_icon_name="contacts"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="person.2.fill"
+              android_material_icon_name="contacts"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('multipleContacts')}
@@ -279,6 +299,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  logoContainer: {
+    marginBottom: 12,
+    boxShadow: '0px 8px 24px rgba(41, 98, 255, 0.15)',
+    elevation: 6,
+    borderRadius: 20,
+    backgroundColor: colors.card,
+    padding: 6,
+  },
+  logo: {
+    width: 80,
+    height: 80,
+  },
   title: {
     fontSize: 28,
     fontWeight: '800',
@@ -309,15 +341,17 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.card,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   cardTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.text,
     marginBottom: 16,
   },
@@ -331,17 +365,25 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 16,
   },
+  featureIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
   featureTextContainer: {
     flex: 1,
-    marginLeft: 12,
   },
   rtlFeatureText: {
     marginLeft: 0,
-    marginRight: 12,
+    marginRight: 16,
   },
   featureTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
     marginBottom: 4,
   },
@@ -393,7 +435,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 12,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+    boxShadow: '0px 4px 12px rgba(255, 107, 53, 0.3)',
     elevation: 4,
   },
   subscribeButtonText: {

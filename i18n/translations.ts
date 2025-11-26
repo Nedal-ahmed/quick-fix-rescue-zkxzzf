@@ -107,6 +107,44 @@ export const translations = {
     
     // Tab Labels
     home: 'Home',
+    checkout: 'Checkout',
+    payments: 'Payments',
+    
+    // Checkout Screen
+    checkoutTitle: 'Checkout',
+    checkoutSubtitle: 'Complete your purchase securely with Stripe',
+    selectItem: 'Select Item',
+    paymentDetails: 'Payment Details',
+    enterCardInfo: 'Enter your card information (Test Mode)',
+    orderSummary: 'Order Summary',
+    item: 'Item',
+    subtotal: 'Subtotal',
+    total: 'Total',
+    payNow: 'Pay Now',
+    securedByStripe: 'Secured by Stripe - Your payment information is encrypted',
+    authRequired: 'Authentication Required',
+    authRequiredMessage: 'You must be logged in to complete checkout. Please create an account or sign in first.',
+    selectItemError: 'Please select an item to purchase',
+    enterValidCard: 'Please enter valid card details',
+    paymentSuccessful: 'Payment Successful! 🎉',
+    paymentSuccessMessage: 'Your payment has been processed successfully. Thank you for your purchase!',
+    paymentFailed: 'Payment Failed',
+    paymentFailedMessage: 'Failed to process payment. Please try again.',
+    viewReceipt: 'View Receipt',
+    
+    // Payment History Screen
+    paymentHistory: 'Payment History',
+    paymentHistorySubtitle: 'View all your past transactions',
+    noPaymentsYet: 'No Payments Yet',
+    noPaymentsMessage: 'Your payment history will appear here once you make a purchase',
+    notLoggedIn: 'Not Logged In',
+    notLoggedInMessage: 'Please log in to view your payment history',
+    paymentId: 'Payment ID',
+    method: 'Method',
+    succeeded: 'Succeeded',
+    processing: 'Processing',
+    failed: 'Failed',
+    canceled: 'Canceled',
   },
   ar: {
     // Home Screen
@@ -215,5 +253,43 @@ export const translations = {
     
     // Tab Labels
     home: 'الرئيسية',
+    checkout: 'الدفع',
+    payments: 'المدفوعات',
+    
+    // Checkout Screen
+    checkoutTitle: 'الدفع',
+    checkoutSubtitle: 'أكمل عملية الشراء بأمان مع Stripe',
+    selectItem: 'اختر العنصر',
+    paymentDetails: 'تفاصيل الدفع',
+    enterCardInfo: 'أدخل معلومات بطاقتك (وضع الاختبار)',
+    orderSummary: 'ملخص الطلب',
+    item: 'العنصر',
+    subtotal: 'المجموع الفرعي',
+    total: 'المجموع',
+    payNow: 'ادفع الآن',
+    securedByStripe: 'مؤمن بواسطة Stripe - معلومات الدفع الخاصة بك مشفرة',
+    authRequired: 'المصادقة مطلوبة',
+    authRequiredMessage: 'يجب عليك تسجيل الدخول لإكمال الدفع. يرجى إنشاء حساب أو تسجيل الدخول أولاً.',
+    selectItemError: 'يرجى اختيار عنصر للشراء',
+    enterValidCard: 'يرجى إدخال تفاصيل بطاقة صالحة',
+    paymentSuccessful: 'تم الدفع بنجاح! 🎉',
+    paymentSuccessMessage: 'تمت معالجة دفعتك بنجاح. شكراً لك على الشراء!',
+    paymentFailed: 'فشل الدفع',
+    paymentFailedMessage: 'فشل في معالجة الدفع. يرجى المحاولة مرة أخرى.',
+    viewReceipt: 'عرض الإيصال',
+    
+    // Payment History Screen
+    paymentHistory: 'سجل المدفوعات',
+    paymentHistorySubtitle: 'عرض جميع معاملاتك السابقة',
+    noPaymentsYet: 'لا توجد مدفوعات بعد',
+    noPaymentsMessage: 'سيظهر سجل المدفوعات الخاص بك هنا بمجرد إجراء عملية شراء',
+    notLoggedIn: 'غير مسجل الدخول',
+    notLoggedInMessage: 'يرجى تسجيل الدخول لعرض سجل المدفوعات الخاص بك',
+    paymentId: 'معرف الدفع',
+    method: 'الطريقة',
+    succeeded: 'نجح',
+    processing: 'قيد المعالجة',
+    failed: 'فشل',
+    canceled: 'ملغى',
   },
 };

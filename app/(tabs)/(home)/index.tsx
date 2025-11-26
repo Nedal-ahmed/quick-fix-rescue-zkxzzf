@@ -9,8 +9,10 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
+  Image,
 } from 'react-native';
 import * as Location from 'expo-location';
+import { router } from 'expo-router';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -156,6 +158,10 @@ export default function HomeScreen() {
     );
   };
 
+  const handleViewAllRescuePoints = () => {
+    router.push('/(tabs)/(home)/all-rescue-points');
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -191,12 +197,16 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <IconSymbol
-          ios_icon_name="cross.case.fill"
-          android_material_icon_name="local-hospital"
-          size={80}
-          color={colors.primary}
-        />
+        <View style={styles.logoContainer}>
+          <View style={styles.logoPlaceholder}>
+            <IconSymbol
+              ios_icon_name="cross.case.fill"
+              android_material_icon_name="local-hospital"
+              size={48}
+              color={colors.card}
+            />
+          </View>
+        </View>
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('quickFix')}</Text>
         <Text style={[styles.subtitle, isRTL && styles.rtlText]}>
           {t('emergencyRescueService')}
@@ -216,15 +226,32 @@ export default function HomeScreen() {
               {t('yourCurrentLocation')}
             </Text>
           </View>
-          <Text style={[styles.locationText, isRTL && styles.rtlText]}>
-            {t('latitude')}: {location.coords.latitude.toFixed(6)}
-          </Text>
-          <Text style={[styles.locationText, isRTL && styles.rtlText]}>
-            {t('longitude')}: {location.coords.longitude.toFixed(6)}
-          </Text>
-          <Text style={[styles.locationAccuracy, isRTL && styles.rtlText]}>
-            {t('accuracy')}: ±{location.coords.accuracy?.toFixed(0)}m
-          </Text>
+          <View style={styles.locationDetails}>
+            <View style={styles.locationRow}>
+              <Text style={[styles.locationLabel, isRTL && styles.rtlText]}>
+                {t('latitude')}:
+              </Text>
+              <Text style={[styles.locationValue, isRTL && styles.rtlText]}>
+                {location.coords.latitude.toFixed(6)}
+              </Text>
+            </View>
+            <View style={styles.locationRow}>
+              <Text style={[styles.locationLabel, isRTL && styles.rtlText]}>
+                {t('longitude')}:
+              </Text>
+              <Text style={[styles.locationValue, isRTL && styles.rtlText]}>
+                {location.coords.longitude.toFixed(6)}
+              </Text>
+            </View>
+            <View style={styles.locationRow}>
+              <Text style={[styles.locationLabel, isRTL && styles.rtlText]}>
+                {t('accuracy')}:
+              </Text>
+              <Text style={[styles.locationValue, isRTL && styles.rtlText]}>
+                ±{location.coords.accuracy?.toFixed(0)}m
+              </Text>
+            </View>
+          </View>
         </View>
       )}
 
@@ -234,7 +261,7 @@ export default function HomeScreen() {
             <IconSymbol
               ios_icon_name="mappin.circle.fill"
               android_material_icon_name="place"
-              size={24}
+              size={28}
               color={colors.accent}
             />
             <Text style={[styles.rescuePointTitle, isRTL && styles.rtlText]}>
@@ -244,9 +271,17 @@ export default function HomeScreen() {
           <Text style={[styles.rescuePointName, isRTL && styles.rtlText]}>
             {nearestPoint.name}
           </Text>
-          <Text style={[styles.rescuePointDistance, isRTL && styles.rtlText]}>
-            {t('distance')}: {nearestPoint.distance?.toFixed(2)} {t('kmAway')}
-          </Text>
+          <View style={styles.distanceBadge}>
+            <IconSymbol
+              ios_icon_name="location.fill"
+              android_material_icon_name="place"
+              size={16}
+              color={colors.card}
+            />
+            <Text style={styles.distanceText}>
+              {nearestPoint.distance?.toFixed(2)} {t('kmAway')}
+            </Text>
+          </View>
         </View>
       )}
 
@@ -263,6 +298,19 @@ export default function HomeScreen() {
             color={colors.card}
           />
           <Text style={styles.actionButtonText}>{t('showNearestRescuePoint')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, styles.secondaryButton]}
+          onPress={handleViewAllRescuePoints}
+        >
+          <IconSymbol
+            ios_icon_name="list.bullet"
+            android_material_icon_name="list"
+            size={24}
+            color={colors.card}
+          />
+          <Text style={styles.actionButtonText}>{t('viewAllRescuePoints')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -299,19 +347,25 @@ export default function HomeScreen() {
       <View style={styles.infoCard}>
         <Text style={[styles.infoTitle, isRTL && styles.rtlText]}>{t('howItWorks')}</Text>
         <View style={styles.infoItem}>
-          <Text style={styles.infoBullet}>•</Text>
+          <View style={styles.infoBulletContainer}>
+            <Text style={styles.infoBullet}>1</Text>
+          </View>
           <Text style={[styles.infoText, isRTL && styles.rtlText]}>
             {t('howItWorksStep1')}
           </Text>
         </View>
         <View style={styles.infoItem}>
-          <Text style={styles.infoBullet}>•</Text>
+          <View style={styles.infoBulletContainer}>
+            <Text style={styles.infoBullet}>2</Text>
+          </View>
           <Text style={[styles.infoText, isRTL && styles.rtlText]}>
             {t('howItWorksStep2')}
           </Text>
         </View>
         <View style={styles.infoItem}>
-          <Text style={styles.infoBullet}>•</Text>
+          <View style={styles.infoBulletContainer}>
+            <Text style={styles.infoBullet}>3</Text>
+          </View>
           <Text style={[styles.infoText, isRTL && styles.rtlText]}>
             {t('howItWorksStep3')}
           </Text>
@@ -363,64 +417,96 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     paddingHorizontal: 32,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
+    boxShadow: '0px 4px 12px rgba(41, 98, 255, 0.3)',
+    elevation: 4,
   },
   retryButtonText: {
     color: colors.card,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   header: {
     alignItems: 'center',
     marginBottom: 32,
   },
+  logoContainer: {
+    marginBottom: 16,
+  },
+  logoPlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0px 8px 24px rgba(41, 98, 255, 0.3)',
+    elevation: 8,
+  },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
+    fontSize: 36,
+    fontWeight: '900',
     color: colors.text,
-    marginTop: 16,
+    marginTop: 8,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: colors.textSecondary,
-    marginTop: 4,
+    marginTop: 6,
+    fontWeight: '500',
   },
   locationCard: {
     backgroundColor: colors.card,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   locationHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   locationTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: colors.text,
-    marginLeft: 8,
+    marginLeft: 10,
   },
-  locationText: {
+  locationDetails: {
+    gap: 10,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  locationLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontWeight: '600',
+  },
+  locationValue: {
     fontSize: 14,
     color: colors.text,
-    marginBottom: 4,
-  },
-  locationAccuracy: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    marginTop: 4,
+    fontWeight: '600',
   },
   rescuePointCard: {
     backgroundColor: colors.highlight,
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    padding: 24,
     marginBottom: 24,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 4px 12px rgba(255, 107, 53, 0.15)',
     elevation: 3,
+    borderWidth: 2,
+    borderColor: colors.accent,
   },
   rescuePointHeader: {
     flexDirection: 'row',
@@ -428,96 +514,123 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   rescuePointTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: colors.text,
-    marginLeft: 8,
+    marginLeft: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   rescuePointName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '800',
     color: colors.text,
-    marginBottom: 8,
+    marginBottom: 12,
   },
-  rescuePointDistance: {
+  distanceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.accent,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+  },
+  distanceText: {
     fontSize: 14,
-    color: colors.text,
+    fontWeight: '700',
+    color: colors.card,
+    marginLeft: 6,
   },
   buttonContainer: {
     marginBottom: 24,
+    gap: 12,
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 18,
     paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 12,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+    borderRadius: 14,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.12)',
     elevation: 4,
   },
   primaryButton: {
     backgroundColor: colors.primary,
+  },
+  secondaryButton: {
+    backgroundColor: colors.secondary,
   },
   emergencyButton: {
     backgroundColor: colors.accent,
   },
   disabledButton: {
     backgroundColor: colors.success,
-    opacity: 0.8,
+    opacity: 0.9,
   },
   actionButtonText: {
     color: colors.card,
     fontSize: 16,
     fontWeight: '700',
-    marginLeft: 8,
+    marginLeft: 10,
   },
   refreshButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: colors.primary,
     backgroundColor: 'transparent',
   },
   refreshButtonText: {
     color: colors.primary,
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
     marginLeft: 8,
   },
   infoCard: {
     backgroundColor: colors.card,
-    borderRadius: 12,
-    padding: 20,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: 16,
+    padding: 24,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   infoTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontWeight: '800',
     color: colors.text,
-    marginBottom: 12,
+    marginBottom: 20,
   },
   infoItem: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 16,
+    alignItems: 'flex-start',
+  },
+  infoBulletContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
   infoBullet: {
-    fontSize: 16,
-    color: colors.primary,
-    marginRight: 8,
+    fontSize: 14,
+    color: colors.card,
     fontWeight: '700',
   },
   infoText: {
     flex: 1,
     fontSize: 14,
     color: colors.text,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   rtlText: {
     textAlign: 'right',

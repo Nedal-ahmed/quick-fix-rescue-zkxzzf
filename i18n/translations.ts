@@ -19,6 +19,12 @@ export const translations = {
     sendLocationForRescue: 'Send Location for Rescue',
     requestSent: 'Request Sent!',
     refreshLocation: 'Refresh Location',
+    viewAllRescuePoints: 'View All Rescue Points',
+    
+    // All Rescue Points Screen
+    allRescuePoints: 'All Rescue Points',
+    rescuePointsSortedByDistance: 'Rescue points are sorted by distance from your current location',
+    rescuePointsNotSorted: 'Enable location services to see distances from your location',
     
     // Alerts
     error: 'Error',
@@ -26,6 +32,7 @@ export const translations = {
     rescueRequestSent: 'Rescue Request Sent',
     rescueRequestMessage: 'Your location has been sent to our emergency response team.\n\nLatitude: {latitude}\nLongitude: {longitude}\n\nA rescue vehicle will be dispatched shortly.',
     ok: 'OK',
+    cancel: 'Cancel',
     nearestRescuePointTitle: 'Nearest Rescue Point',
     nearestRescuePointMessage: '{name}\n\nDistance: {distance} km\n\nLatitude: {latitude}\nLongitude: {longitude}\n\nNote: react-native-maps is not supported in Natively. In a production app, this would show the location on a map.',
     unableToFindRescuePoint: 'Unable to find nearest rescue point. Please try again.',
@@ -55,6 +62,7 @@ export const translations = {
     emergencyTip3: 'In case of emergency, use the "Send Location for Rescue" button immediately',
     language: 'Language',
     changeLanguage: 'Change Language',
+    selectLanguage: 'Select Language',
     
     // Premium Screen
     premium: 'Premium',
@@ -107,6 +115,12 @@ export const translations = {
     sendLocationForRescue: 'إرسال الموقع للإنقاذ',
     requestSent: 'تم إرسال الطلب!',
     refreshLocation: 'تحديث الموقع',
+    viewAllRescuePoints: 'عرض جميع نقاط الإنقاذ',
+    
+    // All Rescue Points Screen
+    allRescuePoints: 'جميع نقاط الإنقاذ',
+    rescuePointsSortedByDistance: 'تم ترتيب نقاط الإنقاذ حسب المسافة من موقعك الحالي',
+    rescuePointsNotSorted: 'قم بتفعيل خدمات الموقع لرؤية المسافات من موقعك',
     
     // Alerts
     error: 'خطأ',
@@ -114,6 +128,7 @@ export const translations = {
     rescueRequestSent: 'تم إرسال طلب الإنقاذ',
     rescueRequestMessage: 'تم إرسال موقعك إلى فريق الاستجابة للطوارئ.\n\nخط العرض: {latitude}\nخط الطول: {longitude}\n\nسيتم إرسال مركبة إنقاذ قريباً.',
     ok: 'حسناً',
+    cancel: 'إلغاء',
     nearestRescuePointTitle: 'أقرب نقطة إنقاذ',
     nearestRescuePointMessage: '{name}\n\nالمسافة: {distance} كم\n\nخط العرض: {latitude}\nخط الطول: {longitude}\n\nملاحظة: react-native-maps غير مدعوم في Natively. في تطبيق الإنتاج، سيظهر الموقع على الخريطة.',
     unableToFindRescuePoint: 'تعذر العثور على أقرب نقطة إنقاذ. يرجى المحاولة مرة أخرى.',
@@ -143,6 +158,7 @@ export const translations = {
     emergencyTip3: 'في حالة الطوارئ، استخدم زر "إرسال الموقع للإنقاذ" على الفور',
     language: 'اللغة',
     changeLanguage: 'تغيير اللغة',
+    selectLanguage: 'اختر اللغة',
     
     // Premium Screen
     premium: 'بريميوم',

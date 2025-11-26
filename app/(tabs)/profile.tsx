@@ -12,67 +12,69 @@ import {
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { router } from 'expo-router';
 
 export default function ProfileScreen() {
   const { t, language, setLanguage, isRTL } = useLanguage();
 
-  const handleLanguageChange = () => {
-    Alert.alert(
-      t('changeLanguage'),
-      t('language'),
-      [
-        {
-          text: 'English',
-          onPress: () => {
-            console.log('Changing language to English');
-            setLanguage('en');
-          },
-        },
-        {
-          text: 'العربية',
-          onPress: () => {
-            console.log('Changing language to Arabic');
-            setLanguage('ar');
-          },
-        },
-        {
-          text: t('ok'),
-          style: 'cancel',
-        },
-      ]
-    );
+  const handleLanguageChange = async () => {
+    const newLanguage = language === 'en' ? 'ar' : 'en';
+    const languageName = newLanguage === 'en' ? 'English' : 'العربية';
+    
+    try {
+      console.log(`Changing language from ${language} to ${newLanguage}`);
+      await setLanguage(newLanguage);
+      
+      Alert.alert(
+        t('changeLanguage'),
+        `${t('language')}: ${languageName}`,
+        [{ text: t('ok') }]
+      );
+    } catch (error) {
+      console.error('Error changing language:', error);
+      Alert.alert(t('error'), 'Failed to change language');
+    }
   };
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <IconSymbol
-          ios_icon_name="person.circle.fill"
-          android_material_icon_name="account-circle"
-          size={100}
-          color={colors.primary}
-        />
+        <View style={styles.profileIconContainer}>
+          <IconSymbol
+            ios_icon_name="person.circle.fill"
+            android_material_icon_name="account-circle"
+            size={80}
+            color={colors.primary}
+          />
+        </View>
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('profile')}</Text>
       </View>
 
-      <TouchableOpacity style={styles.card} onPress={handleLanguageChange}>
+      <TouchableOpacity style={styles.languageCard} onPress={handleLanguageChange}>
         <View style={styles.languageRow}>
           <View style={styles.languageLeft}>
-            <IconSymbol
-              ios_icon_name="globe"
-              android_material_icon_name="language"
-              size={24}
-              color={colors.primary}
-            />
-            <Text style={[styles.languageLabel, isRTL && styles.rtlText]}>
-              {t('language')}
-            </Text>
+            <View style={styles.iconContainer}>
+              <IconSymbol
+                ios_icon_name="globe"
+                android_material_icon_name="language"
+                size={24}
+                color={colors.primary}
+              />
+            </View>
+            <View>
+              <Text style={[styles.languageLabel, isRTL && styles.rtlText]}>
+                {t('language')}
+              </Text>
+              <Text style={[styles.languageSubtext, isRTL && styles.rtlText]}>
+                {t('changeLanguage')}
+              </Text>
+            </View>
           </View>
           <View style={styles.languageRight}>
-            <Text style={[styles.languageValue, isRTL && styles.rtlText]}>
-              {language === 'en' ? 'English' : 'العربية'}
-            </Text>
+            <View style={styles.languageBadge}>
+              <Text style={styles.languageValue}>
+                {language === 'en' ? 'EN' : 'ع'}
+              </Text>
+            </View>
             <IconSymbol
               ios_icon_name="chevron.right"
               android_material_icon_name="chevron-right"
@@ -91,13 +93,19 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.card}>
+        <Text style={[styles.sectionTitle, isRTL && styles.rtlText]}>
+          {t('nearestRescuePoints')}
+        </Text>
+        
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="location.fill"
-            android_material_icon_name="my-location"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="location.fill"
+              android_material_icon_name="my-location"
+              size={24}
+              color={colors.primary}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('realTimeLocation')}
@@ -109,12 +117,14 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="mappin.circle.fill"
-            android_material_icon_name="place"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="mappin.circle.fill"
+              android_material_icon_name="place"
+              size={24}
+              color={colors.accent}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('nearestRescuePoints')}
@@ -126,12 +136,14 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.featureItem}>
-          <IconSymbol
-            ios_icon_name="phone.fill"
-            android_material_icon_name="phone"
-            size={24}
-            color={colors.primary}
-          />
+          <View style={styles.featureIconContainer}>
+            <IconSymbol
+              ios_icon_name="phone.fill"
+              android_material_icon_name="phone"
+              size={24}
+              color={colors.success}
+            />
+          </View>
           <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
             <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
               {t('emergencyDispatch')}
@@ -151,26 +163,40 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.infoRow}>
           <Text style={[styles.infoLabel, isRTL && styles.rtlText]}>{t('platform')}:</Text>
-          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>{Platform.OS}</Text>
+          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>
+            {Platform.OS === 'ios' ? 'iOS' : 'Android'}
+          </Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={[styles.infoLabel, isRTL && styles.rtlText]}>{t('language')}:</Text>
+          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>
+            {language === 'en' ? 'English' : 'العربية'}
+          </Text>
         </View>
       </View>
 
       <View style={styles.card}>
         <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('emergencyTips')}</Text>
         <View style={styles.tipItem}>
-          <Text style={styles.tipBullet}>•</Text>
+          <View style={styles.tipBulletContainer}>
+            <Text style={styles.tipBullet}>1</Text>
+          </View>
           <Text style={[styles.tipText, isRTL && styles.rtlText]}>
             {t('emergencyTip1')}
           </Text>
         </View>
         <View style={styles.tipItem}>
-          <Text style={styles.tipBullet}>•</Text>
+          <View style={styles.tipBulletContainer}>
+            <Text style={styles.tipBullet}>2</Text>
+          </View>
           <Text style={[styles.tipText, isRTL && styles.rtlText]}>
             {t('emergencyTip2')}
           </Text>
         </View>
         <View style={styles.tipItem}>
-          <Text style={styles.tipBullet}>•</Text>
+          <View style={styles.tipBulletContainer}>
+            <Text style={styles.tipBullet}>3</Text>
+          </View>
           <Text style={[styles.tipText, isRTL && styles.rtlText]}>
             {t('emergencyTip3')}
           </Text>
@@ -194,30 +220,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
+  profileIconContainer: {
+    marginBottom: 16,
+  },
   title: {
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: '900',
     color: colors.text,
-    marginTop: 16,
   },
-  card: {
+  languageCard: {
     backgroundColor: colors.card,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
     elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 12,
-  },
-  cardText: {
-    fontSize: 14,
-    color: colors.text,
-    lineHeight: 20,
+    borderWidth: 2,
+    borderColor: colors.primary,
   },
   languageRow: {
     flexDirection: 'row',
@@ -227,40 +246,99 @@ const styles = StyleSheet.create({
   languageLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.highlight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
   },
   languageLabel: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: colors.text,
-    marginLeft: 12,
+    marginBottom: 4,
+  },
+  languageSubtext: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    fontWeight: '500',
   },
   languageRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
+  },
+  languageBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   languageValue: {
     fontSize: 16,
-    color: colors.textSecondary,
-    marginRight: 8,
+    fontWeight: '700',
+    color: colors.card,
+  },
+  card: {
+    backgroundColor: colors.card,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.text,
+    marginBottom: 16,
+  },
+  cardText: {
+    fontSize: 15,
+    color: colors.text,
+    lineHeight: 24,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 20,
+  },
+  featureIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
   },
   featureTextContainer: {
     flex: 1,
-    marginLeft: 12,
   },
   rtlFeatureText: {
     marginLeft: 0,
-    marginRight: 12,
+    marginRight: 16,
   },
   featureTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.text,
-    marginBottom: 4,
+    marginBottom: 6,
   },
   featureText: {
     fontSize: 14,
@@ -270,32 +348,44 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   infoLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: colors.text,
   },
   infoValue: {
-    fontSize: 14,
+    fontSize: 15,
     color: colors.textSecondary,
+    fontWeight: '600',
   },
   tipItem: {
     flexDirection: 'row',
-    marginBottom: 8,
+    marginBottom: 16,
+    alignItems: 'flex-start',
+  },
+  tipBulletContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
   tipBullet: {
-    fontSize: 16,
-    color: colors.primary,
-    marginRight: 8,
+    fontSize: 14,
+    color: colors.card,
     fontWeight: '700',
   },
   tipText: {
     flex: 1,
     fontSize: 14,
     color: colors.text,
-    lineHeight: 20,
+    lineHeight: 22,
   },
   rtlText: {
     textAlign: 'right',

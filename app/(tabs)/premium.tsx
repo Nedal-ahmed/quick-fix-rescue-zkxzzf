@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  Platform,
   Image,
 } from 'react-native';
 import { colors } from '@/styles/commonStyles';
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   scrollContent: {
-    paddingTop: 20,
+    paddingTop: Platform.OS === 'android' ? 48 : 20,
     paddingHorizontal: 20,
     paddingBottom: 120,
   },

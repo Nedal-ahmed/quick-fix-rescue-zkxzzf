@@ -1,10 +1,49 @@
 
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Platform,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { router } from 'expo-router';
 
 export default function ProfileScreen() {
+  const { t, language, setLanguage, isRTL } = useLanguage();
+
+  const handleLanguageChange = () => {
+    Alert.alert(
+      t('changeLanguage'),
+      t('language'),
+      [
+        {
+          text: 'English',
+          onPress: () => {
+            console.log('Changing language to English');
+            setLanguage('en');
+          },
+        },
+        {
+          text: 'العربية',
+          onPress: () => {
+            console.log('Changing language to Arabic');
+            setLanguage('ar');
+          },
+        },
+        {
+          text: t('ok'),
+          style: 'cancel',
+        },
+      ]
+    );
+  };
+
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
@@ -14,13 +53,40 @@ export default function ProfileScreen() {
           size={100}
           color={colors.primary}
         />
-        <Text style={styles.title}>Profile</Text>
+        <Text style={[styles.title, isRTL && styles.rtlText]}>{t('profile')}</Text>
       </View>
 
+      <TouchableOpacity style={styles.card} onPress={handleLanguageChange}>
+        <View style={styles.languageRow}>
+          <View style={styles.languageLeft}>
+            <IconSymbol
+              ios_icon_name="globe"
+              android_material_icon_name="language"
+              size={24}
+              color={colors.primary}
+            />
+            <Text style={[styles.languageLabel, isRTL && styles.rtlText]}>
+              {t('language')}
+            </Text>
+          </View>
+          <View style={styles.languageRight}>
+            <Text style={[styles.languageValue, isRTL && styles.rtlText]}>
+              {language === 'en' ? 'English' : 'العربية'}
+            </Text>
+            <IconSymbol
+              ios_icon_name="chevron.right"
+              android_material_icon_name="chevron-right"
+              size={20}
+              color={colors.textSecondary}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>About Quick Fix</Text>
-        <Text style={styles.cardText}>
-          Quick Fix is your emergency rescue companion. We use GPS technology to locate you and connect you with the nearest rescue services.
+        <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('aboutQuickFix')}</Text>
+        <Text style={[styles.cardText, isRTL && styles.rtlText]}>
+          {t('aboutQuickFixText')}
         </Text>
       </View>
 
@@ -32,10 +98,12 @@ export default function ProfileScreen() {
             size={24}
             color={colors.primary}
           />
-          <View style={styles.featureTextContainer}>
-            <Text style={styles.featureTitle}>Real-time Location</Text>
-            <Text style={styles.featureText}>
-              Accurate GPS tracking to pinpoint your exact location
+          <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
+            <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
+              {t('realTimeLocation')}
+            </Text>
+            <Text style={[styles.featureText, isRTL && styles.rtlText]}>
+              {t('realTimeLocationText')}
             </Text>
           </View>
         </View>
@@ -47,10 +115,12 @@ export default function ProfileScreen() {
             size={24}
             color={colors.primary}
           />
-          <View style={styles.featureTextContainer}>
-            <Text style={styles.featureTitle}>Nearest Rescue Points</Text>
-            <Text style={styles.featureText}>
-              Find the closest emergency rescue station to your location
+          <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
+            <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
+              {t('nearestRescuePoints')}
+            </Text>
+            <Text style={[styles.featureText, isRTL && styles.rtlText]}>
+              {t('nearestRescuePointsText')}
             </Text>
           </View>
         </View>
@@ -62,45 +132,47 @@ export default function ProfileScreen() {
             size={24}
             color={colors.primary}
           />
-          <View style={styles.featureTextContainer}>
-            <Text style={styles.featureTitle}>Emergency Dispatch</Text>
-            <Text style={styles.featureText}>
-              Send your location to dispatch a rescue vehicle instantly
+          <View style={[styles.featureTextContainer, isRTL && styles.rtlFeatureText]}>
+            <Text style={[styles.featureTitle, isRTL && styles.rtlText]}>
+              {t('emergencyDispatch')}
+            </Text>
+            <Text style={[styles.featureText, isRTL && styles.rtlText]}>
+              {t('emergencyDispatchText')}
             </Text>
           </View>
         </View>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>App Information</Text>
+        <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('appInformation')}</Text>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Version:</Text>
-          <Text style={styles.infoValue}>1.0.0</Text>
+          <Text style={[styles.infoLabel, isRTL && styles.rtlText]}>{t('version')}:</Text>
+          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>1.0.0</Text>
         </View>
         <View style={styles.infoRow}>
-          <Text style={styles.infoLabel}>Platform:</Text>
-          <Text style={styles.infoValue}>{Platform.OS}</Text>
+          <Text style={[styles.infoLabel, isRTL && styles.rtlText]}>{t('platform')}:</Text>
+          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>{Platform.OS}</Text>
         </View>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Emergency Tips</Text>
+        <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('emergencyTips')}</Text>
         <View style={styles.tipItem}>
           <Text style={styles.tipBullet}>•</Text>
-          <Text style={styles.tipText}>
-            Always keep your location services enabled for faster response
+          <Text style={[styles.tipText, isRTL && styles.rtlText]}>
+            {t('emergencyTip1')}
           </Text>
         </View>
         <View style={styles.tipItem}>
           <Text style={styles.tipBullet}>•</Text>
-          <Text style={styles.tipText}>
-            Ensure you have a stable internet connection for real-time updates
+          <Text style={[styles.tipText, isRTL && styles.rtlText]}>
+            {t('emergencyTip2')}
           </Text>
         </View>
         <View style={styles.tipItem}>
           <Text style={styles.tipBullet}>•</Text>
-          <Text style={styles.tipText}>
-            In case of emergency, use the &quot;Send Location for Rescue&quot; button immediately
+          <Text style={[styles.tipText, isRTL && styles.rtlText]}>
+            {t('emergencyTip3')}
           </Text>
         </View>
       </View>
@@ -147,6 +219,30 @@ const styles = StyleSheet.create({
     color: colors.text,
     lineHeight: 20,
   },
+  languageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  languageLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  languageLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginLeft: 12,
+  },
+  languageRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  languageValue: {
+    fontSize: 16,
+    color: colors.textSecondary,
+    marginRight: 8,
+  },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -155,6 +251,10 @@ const styles = StyleSheet.create({
   featureTextContainer: {
     flex: 1,
     marginLeft: 12,
+  },
+  rtlFeatureText: {
+    marginLeft: 0,
+    marginRight: 12,
   },
   featureTitle: {
     fontSize: 16,
@@ -196,5 +296,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     lineHeight: 20,
+  },
+  rtlText: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
   },
 });

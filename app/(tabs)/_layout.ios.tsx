@@ -1,16 +1,30 @@
 
-import { Tabs } from 'expo-router/unstable-native-tabs';
+import { Tabs } from 'expo-router';
 import React from 'react';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
+import FloatingTabBar from '@/components/FloatingTabBar';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function TabLayout() {
+  const { t } = useLanguage();
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
+        tabBarStyle: {
+          position: 'absolute',
+        },
+      }}
+      tabBar={(props) => <FloatingTabBar {...props} />}
+    >
       <Tabs.Screen
         name="(home)"
         options={{
-          title: 'Home',
+          title: t('home'),
           tabBarIcon: ({ color }) => (
             <IconSymbol
               ios_icon_name="house.fill"
@@ -21,9 +35,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="premium"
+        options={{
+          title: t('premium'),
+          tabBarIcon: ({ color }) => (
+            <IconSymbol
+              ios_icon_name="crown.fill"
+              android_material_icon_name="workspace-premium"
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t('profile'),
           tabBarIcon: ({ color }) => (
             <IconSymbol
               ios_icon_name="person.fill"

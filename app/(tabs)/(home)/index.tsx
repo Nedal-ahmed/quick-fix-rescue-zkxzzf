@@ -13,6 +13,7 @@ import {
 import * as Location from 'expo-location';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface RescuePoint {
   id: string;
@@ -34,6 +35,7 @@ const MOCK_RESCUE_POINTS: RescuePoint[] = [
 ];
 
 export default function HomeScreen() {
+  const { t, isRTL } = useLanguage();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -53,7 +55,7 @@ export default function HomeScreen() {
       const { status } = await Location.requestForegroundPermissionsAsync();
       
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        setErrorMsg(t('permissionDenied'));
         setLoading(false);
         console.log('Location permission denied');
         return;
@@ -70,7 +72,7 @@ export default function HomeScreen() {
       setLoading(false);
     } catch (error) {
       console.error('Error getting location:', error);
-      setErrorMsg('Failed to get your location. Please try again.');
+      setErrorMsg(t('locationError'));
       setLoading(false);
     }
   };
@@ -111,7 +113,7 @@ export default function HomeScreen() {
 
   const handleSendLocationForRescue = () => {
     if (!location) {
-      Alert.alert('Error', 'Location not available. Please try again.');
+      Alert.alert(t('error'), t('locationNotAvailable'));
       return;
     }
 
@@ -119,11 +121,14 @@ export default function HomeScreen() {
     setRequestSent(true);
 
     Alert.alert(
-      'Rescue Request Sent',
-      `Your location has been sent to our emergency response team.\n\nLatitude: ${location.coords.latitude.toFixed(6)}\nLongitude: ${location.coords.longitude.toFixed(6)}\n\nA rescue vehicle will be dispatched shortly.`,
+      t('rescueRequestSent'),
+      t('rescueRequestMessage', {
+        latitude: location.coords.latitude.toFixed(6),
+        longitude: location.coords.longitude.toFixed(6),
+      }),
       [
         {
-          text: 'OK',
+          text: t('ok'),
           onPress: () => {
             setTimeout(() => setRequestSent(false), 3000);
           },
@@ -134,15 +139,20 @@ export default function HomeScreen() {
 
   const handleShowNearestRescuePoint = () => {
     if (!nearestPoint) {
-      Alert.alert('Error', 'Unable to find nearest rescue point. Please try again.');
+      Alert.alert(t('error'), t('unableToFindRescuePoint'));
       return;
     }
 
     console.log('Showing nearest rescue point:', nearestPoint);
     Alert.alert(
-      'Nearest Rescue Point',
-      `${nearestPoint.name}\n\nDistance: ${nearestPoint.distance?.toFixed(2)} km\n\nLatitude: ${nearestPoint.latitude.toFixed(6)}\nLongitude: ${nearestPoint.longitude.toFixed(6)}\n\nNote: react-native-maps is not supported in Natively. In a production app, this would show the location on a map.`,
-      [{ text: 'OK' }]
+      t('nearestRescuePointTitle'),
+      t('nearestRescuePointMessage', {
+        name: nearestPoint.name,
+        distance: nearestPoint.distance?.toFixed(2) || '0',
+        latitude: nearestPoint.latitude.toFixed(6),
+        longitude: nearestPoint.longitude.toFixed(6),
+      }),
+      [{ text: t('ok') }]
     );
   };
 
@@ -151,7 +161,9 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Getting your location...</Text>
+          <Text style={[styles.loadingText, isRTL && styles.rtlText]}>
+            {t('gettingLocation')}
+          </Text>
         </View>
       </View>
     );
@@ -167,9 +179,9 @@ export default function HomeScreen() {
             size={64}
             color={colors.error}
           />
-          <Text style={styles.errorText}>{errorMsg}</Text>
+          <Text style={[styles.errorText, isRTL && styles.rtlText]}>{errorMsg}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={getCurrentLocation}>
-            <Text style={styles.retryButtonText}>Retry</Text>
+            <Text style={styles.retryButtonText}>{t('retry')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -185,8 +197,10 @@ export default function HomeScreen() {
           size={80}
           color={colors.primary}
         />
-        <Text style={styles.title}>Quick Fix</Text>
-        <Text style={styles.subtitle}>Emergency Rescue Service - Egypt</Text>
+        <Text style={[styles.title, isRTL && styles.rtlText]}>{t('quickFix')}</Text>
+        <Text style={[styles.subtitle, isRTL && styles.rtlText]}>
+          {t('emergencyRescueService')}
+        </Text>
       </View>
 
       {location && (
@@ -198,16 +212,18 @@ export default function HomeScreen() {
               size={24}
               color={colors.primary}
             />
-            <Text style={styles.locationTitle}>Your Current Location</Text>
+            <Text style={[styles.locationTitle, isRTL && styles.rtlText]}>
+              {t('yourCurrentLocation')}
+            </Text>
           </View>
-          <Text style={styles.locationText}>
-            Latitude: {location.coords.latitude.toFixed(6)}
+          <Text style={[styles.locationText, isRTL && styles.rtlText]}>
+            {t('latitude')}: {location.coords.latitude.toFixed(6)}
           </Text>
-          <Text style={styles.locationText}>
-            Longitude: {location.coords.longitude.toFixed(6)}
+          <Text style={[styles.locationText, isRTL && styles.rtlText]}>
+            {t('longitude')}: {location.coords.longitude.toFixed(6)}
           </Text>
-          <Text style={styles.locationAccuracy}>
-            Accuracy: ±{location.coords.accuracy?.toFixed(0)}m
+          <Text style={[styles.locationAccuracy, isRTL && styles.rtlText]}>
+            {t('accuracy')}: ±{location.coords.accuracy?.toFixed(0)}m
           </Text>
         </View>
       )}
@@ -221,11 +237,15 @@ export default function HomeScreen() {
               size={24}
               color={colors.accent}
             />
-            <Text style={styles.rescuePointTitle}>Nearest Rescue Point</Text>
+            <Text style={[styles.rescuePointTitle, isRTL && styles.rtlText]}>
+              {t('nearestRescuePoint')}
+            </Text>
           </View>
-          <Text style={styles.rescuePointName}>{nearestPoint.name}</Text>
-          <Text style={styles.rescuePointDistance}>
-            Distance: {nearestPoint.distance?.toFixed(2)} km away
+          <Text style={[styles.rescuePointName, isRTL && styles.rtlText]}>
+            {nearestPoint.name}
+          </Text>
+          <Text style={[styles.rescuePointDistance, isRTL && styles.rtlText]}>
+            {t('distance')}: {nearestPoint.distance?.toFixed(2)} {t('kmAway')}
           </Text>
         </View>
       )}
@@ -242,7 +262,7 @@ export default function HomeScreen() {
             size={24}
             color={colors.card}
           />
-          <Text style={styles.actionButtonText}>Show Nearest Rescue Point</Text>
+          <Text style={styles.actionButtonText}>{t('showNearestRescuePoint')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -261,7 +281,7 @@ export default function HomeScreen() {
             color={colors.card}
           />
           <Text style={styles.actionButtonText}>
-            {requestSent ? 'Request Sent!' : 'Send Location for Rescue'}
+            {requestSent ? t('requestSent') : t('sendLocationForRescue')}
           </Text>
         </TouchableOpacity>
 
@@ -272,28 +292,28 @@ export default function HomeScreen() {
             size={20}
             color={colors.primary}
           />
-          <Text style={styles.refreshButtonText}>Refresh Location</Text>
+          <Text style={styles.refreshButtonText}>{t('refreshLocation')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>How It Works</Text>
+        <Text style={[styles.infoTitle, isRTL && styles.rtlText]}>{t('howItWorks')}</Text>
         <View style={styles.infoItem}>
           <Text style={styles.infoBullet}>•</Text>
-          <Text style={styles.infoText}>
-            Your GPS location is automatically detected when you open the app
+          <Text style={[styles.infoText, isRTL && styles.rtlText]}>
+            {t('howItWorksStep1')}
           </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoBullet}>•</Text>
-          <Text style={styles.infoText}>
-            View the nearest rescue point and its distance from your location
+          <Text style={[styles.infoText, isRTL && styles.rtlText]}>
+            {t('howItWorksStep2')}
           </Text>
         </View>
         <View style={styles.infoItem}>
           <Text style={styles.infoBullet}>•</Text>
-          <Text style={styles.infoText}>
-            Send your location to dispatch a rescue vehicle in emergencies
+          <Text style={[styles.infoText, isRTL && styles.rtlText]}>
+            {t('howItWorksStep3')}
           </Text>
         </View>
       </View>
@@ -498,5 +518,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text,
     lineHeight: 20,
+  },
+  rtlText: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
   },
 });

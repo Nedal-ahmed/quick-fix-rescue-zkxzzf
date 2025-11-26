@@ -11,6 +11,11 @@ import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
 
+/**
+ * Universal PremiumScreen Component
+ * This is the fallback component that works on all platforms.
+ * Platform-specific implementations are in premium.native.tsx and premium.web.tsx
+ */
 export default function PremiumScreen() {
   const { t, isRTL } = useLanguage();
 

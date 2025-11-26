@@ -1,7 +1,8 @@
+
 {
   "expo": {
-    "name": "Natively",
-    "slug": "Natively",
+    "name": "Quick Fix",
+    "slug": "Quick Fix",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/natively-dark.png",
@@ -16,7 +17,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.Natively",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue."
       }
     },
     "android": {
@@ -25,7 +28,11 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.Natively"
+      "package": "com.anonymous.Natively",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/images/final_quest_240x240.png",
@@ -34,7 +41,13 @@
     "plugins": [
       "expo-font",
       "expo-router",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue."
+        }
+      ]
     ],
     "scheme": "natively",
     "experiments": {
@@ -43,5 +56,6 @@
     "extra": {
       "router": {}
     }
-  }
+  },
+  "scheme": "Quick Fix"
 }

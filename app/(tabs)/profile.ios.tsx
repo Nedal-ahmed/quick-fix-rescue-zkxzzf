@@ -1,75 +1,203 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { IconSymbol } from "@/components/IconSymbol";
-import { GlassView } from "expo-glass-effect";
-import { useTheme } from "@react-navigation/native";
+
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { colors } from '@/styles/commonStyles';
+import { IconSymbol } from '@/components/IconSymbol';
 
 export default function ProfileScreen() {
-  const theme = useTheme();
-
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]} edges={['top']}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <GlassView style={styles.profileHeader} glassEffectStyle="regular">
-          <IconSymbol ios_icon_name="person.circle.fill" android_material_icon_name="person" size={24} color={theme.colors.primary} />
-          <Text style={[styles.name, { color: theme.colors.text }]}>John Doe</Text>
-          <Text style={[styles.email, { color: theme.dark ? '#98989D' : '#666' }]}>john.doe@example.com</Text>
-        </GlassView>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.header}>
+        <IconSymbol
+          ios_icon_name="person.circle.fill"
+          android_material_icon_name="account-circle"
+          size={100}
+          color={colors.primary}
+        />
+        <Text style={styles.title}>Profile</Text>
+      </View>
 
-        <GlassView style={styles.section} glassEffectStyle="regular">
-          <View style={styles.infoRow}>
-            <IconSymbol ios_icon_name="phone.fill" android_material_icon_name="phone" size={24} color={theme.dark ? '#98989D' : '#666'} />
-            <Text style={[styles.infoText, { color: theme.colors.text }]}>+1 (555) 123-4567</Text>
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>About Quick Fix</Text>
+        <Text style={styles.cardText}>
+          Quick Fix is your emergency rescue companion. We use GPS technology to locate you and connect you with the nearest rescue services.
+        </Text>
+      </View>
+
+      <View style={styles.card}>
+        <View style={styles.featureItem}>
+          <IconSymbol
+            ios_icon_name="location.fill"
+            android_material_icon_name="my-location"
+            size={24}
+            color={colors.primary}
+          />
+          <View style={styles.featureTextContainer}>
+            <Text style={styles.featureTitle}>Real-time Location</Text>
+            <Text style={styles.featureText}>
+              Accurate GPS tracking to pinpoint your exact location
+            </Text>
           </View>
-          <View style={styles.infoRow}>
-            <IconSymbol ios_icon_name="location.fill" android_material_icon_name="location-on" size={24} color={theme.dark ? '#98989D' : '#666'} />
-            <Text style={[styles.infoText, { color: theme.colors.text }]}>San Francisco, CA</Text>
+        </View>
+
+        <View style={styles.featureItem}>
+          <IconSymbol
+            ios_icon_name="mappin.circle.fill"
+            android_material_icon_name="place"
+            size={24}
+            color={colors.primary}
+          />
+          <View style={styles.featureTextContainer}>
+            <Text style={styles.featureTitle}>Nearest Rescue Points</Text>
+            <Text style={styles.featureText}>
+              Find the closest emergency rescue station to your location
+            </Text>
           </View>
-        </GlassView>
-      </ScrollView>
-    </SafeAreaView>
+        </View>
+
+        <View style={styles.featureItem}>
+          <IconSymbol
+            ios_icon_name="phone.fill"
+            android_material_icon_name="phone"
+            size={24}
+            color={colors.primary}
+          />
+          <View style={styles.featureTextContainer}>
+            <Text style={styles.featureTitle}>Emergency Dispatch</Text>
+            <Text style={styles.featureText}>
+              Send your location to dispatch a rescue vehicle instantly
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>App Information</Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Version:</Text>
+          <Text style={styles.infoValue}>1.0.0</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>Platform:</Text>
+          <Text style={styles.infoValue}>iOS</Text>
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Emergency Tips</Text>
+        <View style={styles.tipItem}>
+          <Text style={styles.tipBullet}>•</Text>
+          <Text style={styles.tipText}>
+            Always keep your location services enabled for faster response
+          </Text>
+        </View>
+        <View style={styles.tipItem}>
+          <Text style={styles.tipBullet}>•</Text>
+          <Text style={styles.tipText}>
+            Ensure you have a stable internet connection for real-time updates
+          </Text>
+        </View>
+        <View style={styles.tipItem}>
+          <Text style={styles.tipBullet}>•</Text>
+          <Text style={styles.tipText}>
+            In case of emergency, use the &quot;Send Location for Rescue&quot; button immediately
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  scrollView: {
     flex: 1,
+    backgroundColor: colors.background,
   },
-  container: {
-    flex: 1,
+  scrollContent: {
+    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 120,
   },
-  contentContainer: {
-    padding: 20,
-  },
-  profileHeader: {
+  header: {
     alignItems: 'center',
-    borderRadius: 12,
-    padding: 32,
-    marginBottom: 16,
-    gap: 12,
+    marginBottom: 32,
   },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  title: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: colors.text,
+    marginTop: 16,
   },
-  email: {
-    fontSize: 16,
-  },
-  section: {
+  card: {
+    backgroundColor: colors.card,
     borderRadius: 12,
     padding: 20,
-    gap: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: 12,
+  },
+  cardText: {
+    fontSize: 14,
+    color: colors.text,
+    lineHeight: 20,
+  },
+  featureItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  featureTextContainer: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  featureTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  featureText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    lineHeight: 20,
   },
   infoRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
-  infoText: {
+  infoLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  tipItem: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  tipBullet: {
     fontSize: 16,
+    color: colors.primary,
+    marginRight: 8,
+    fontWeight: '700',
+  },
+  tipText: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.text,
+    lineHeight: 20,
   },
 });

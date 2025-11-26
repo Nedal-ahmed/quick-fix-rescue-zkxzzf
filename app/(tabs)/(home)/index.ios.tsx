@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -41,11 +41,41 @@ export default function HomeScreen() {
   const [nearestPoint, setNearestPoint] = useState<RescuePoint | null>(null);
   const [requestSent, setRequestSent] = useState<boolean>(false);
 
-  useEffect(() => {
-    getCurrentLocation();
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const toRad = (value: number): number => {
+    return (value * Math.PI) / 180;
+  };
+
+  const calculateNearestRescuePoint = useCallback((currentLocation: Location.LocationObject) => {
+    const { latitude, longitude } = currentLocation.coords;
+    
+    const pointsWithDistance = MOCK_RESCUE_POINTS.map(point => {
+      const distance = calculateDistance(
+        latitude,
+        longitude,
+        point.latitude,
+        point.longitude
+      );
+      return { ...point, distance };
+    });
+
+    pointsWithDistance.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+    setNearestPoint(pointsWithDistance[0]);
+    console.log('Nearest rescue point:', pointsWithDistance[0]);
   }, []);
 
-  const getCurrentLocation = async () => {
+  const getCurrentLocation = useCallback(async () => {
     try {
       setLoading(true);
       setErrorMsg(null);
@@ -74,41 +104,11 @@ export default function HomeScreen() {
       setErrorMsg(t('locationError'));
       setLoading(false);
     }
-  };
+  }, [t, calculateNearestRescuePoint]);
 
-  const calculateNearestRescuePoint = (currentLocation: Location.LocationObject) => {
-    const { latitude, longitude } = currentLocation.coords;
-    
-    const pointsWithDistance = MOCK_RESCUE_POINTS.map(point => {
-      const distance = calculateDistance(
-        latitude,
-        longitude,
-        point.latitude,
-        point.longitude
-      );
-      return { ...point, distance };
-    });
-
-    pointsWithDistance.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-    setNearestPoint(pointsWithDistance[0]);
-    console.log('Nearest rescue point:', pointsWithDistance[0]);
-  };
-
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  };
-
-  const toRad = (value: number): number => {
-    return (value * Math.PI) / 180;
-  };
+  useEffect(() => {
+    getCurrentLocation();
+  }, [getCurrentLocation]);
 
   const handleSendLocationForRescue = () => {
     if (!location) {

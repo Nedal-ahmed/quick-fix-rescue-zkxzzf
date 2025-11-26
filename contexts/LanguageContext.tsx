@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { I18nManager } from 'react-native';
-import * as Updates from 'expo-updates';
 import i18n from '@/i18n/i18n.config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -57,6 +56,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         setIsRTL(shouldBeRTL);
         
         // Uncomment this in production to reload the app
+        // You would need to install expo-updates first:
+        // import * as Updates from 'expo-updates';
         // if (!__DEV__) {
         //   Updates.reloadAsync();
         // }

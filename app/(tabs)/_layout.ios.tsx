@@ -48,19 +48,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="payment-history"
-        options={{
-          title: t('payments') || 'Payments',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol
-              ios_icon_name="doc.text.fill"
-              android_material_icon_name="receipt"
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="sponsored-ads"
         options={{
           title: t('sponsoredAds'),

@@ -90,12 +90,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="checkout"
-        options={{
-          href: null,
-        }}
-      />
     </Tabs>
   );
 }

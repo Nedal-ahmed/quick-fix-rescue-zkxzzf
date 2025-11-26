@@ -35,7 +35,7 @@ export default function PremiumScreen() {
       </View>
 
       <View style={styles.card}>
-        <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Platform Not Supported</Text>
+        <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Web Version Not Supported</Text>
         <Text style={[styles.cardText, isRTL && styles.rtlText]}>
           Premium subscriptions are currently only available on iOS and Android devices. 
           Please use the mobile app to subscribe to premium features.
@@ -184,11 +184,7 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     marginBottom: 12,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    elevation: 6,
+    boxShadow: '0px 8px 24px rgba(41, 98, 255, 0.15)',
     borderRadius: 20,
     backgroundColor: colors.card,
     padding: 6,
@@ -215,11 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 3,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
     borderWidth: 1,
     borderColor: colors.border,
   },

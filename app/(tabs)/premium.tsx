@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
-  Image,
 } from 'react-native';
 import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
@@ -18,13 +17,6 @@ export default function PremiumScreen() {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('@/assets/images/6bd4fef3-748f-40f9-8634-91fd29f4c449.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
         <IconSymbol
           ios_icon_name="crown.fill"
           android_material_icon_name="workspace-premium"
@@ -181,21 +173,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 24,
-  },
-  logoContainer: {
-    marginBottom: 12,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    elevation: 6,
-    borderRadius: 20,
-    backgroundColor: colors.card,
-    padding: 6,
-  },
-  logo: {
-    width: 80,
-    height: 80,
   },
   title: {
     fontSize: 28,

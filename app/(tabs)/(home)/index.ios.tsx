@@ -22,11 +22,14 @@ interface RescuePoint {
 }
 
 const MOCK_RESCUE_POINTS: RescuePoint[] = [
-  { id: '1', name: 'Central Rescue Station', latitude: 40.7589, longitude: -73.9851 },
-  { id: '2', name: 'North Emergency Center', latitude: 40.7829, longitude: -73.9654 },
-  { id: '3', name: 'South Medical Response', latitude: 40.7489, longitude: -73.9680 },
-  { id: '4', name: 'East Quick Response Unit', latitude: 40.7614, longitude: -73.9776 },
-  { id: '5', name: 'West Emergency Services', latitude: 40.7580, longitude: -73.9855 },
+  { id: '1', name: 'Cairo Central Rescue Station', latitude: 30.0444, longitude: 31.2357 },
+  { id: '2', name: 'Giza Emergency Center', latitude: 30.0131, longitude: 31.2089 },
+  { id: '3', name: 'Nasr City Quick Response', latitude: 30.0626, longitude: 31.3549 },
+  { id: '4', name: 'Heliopolis Medical Response', latitude: 30.0808, longitude: 31.3239 },
+  { id: '5', name: 'Maadi Emergency Services', latitude: 29.9602, longitude: 31.2569 },
+  { id: '6', name: 'Alexandria Rescue Point', latitude: 31.2001, longitude: 29.9187 },
+  { id: '7', name: 'Zamalek Emergency Unit', latitude: 30.0618, longitude: 31.2194 },
+  { id: '8', name: '6th October City Response', latitude: 29.9668, longitude: 30.9376 },
 ];
 
 export default function HomeScreen() {
@@ -182,7 +185,7 @@ export default function HomeScreen() {
           color={colors.primary}
         />
         <Text style={styles.title}>Quick Fix</Text>
-        <Text style={styles.subtitle}>Emergency Rescue Service</Text>
+        <Text style={styles.subtitle}>Emergency Rescue Service - Egypt</Text>
       </View>
 
       {location && (

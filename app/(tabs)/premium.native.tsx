@@ -18,16 +18,6 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useStripe, CardField } from '@stripe/stripe-react-native';
 import { supabase } from '@/app/integrations/supabase/client';
 
-type CheckoutMode = 'subscription' | 'one-time';
-
-interface CheckoutItem {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  currency: string;
-}
-
 export default function PremiumScreen() {
   const { t, isRTL } = useLanguage();
   const { subscription, plans, loading, isPremium, createSubscription, cancelSubscription, refreshSubscription } = useSubscription();
@@ -37,33 +27,9 @@ export default function PremiumScreen() {
   const [cardComplete, setCardComplete] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [checkoutMode, setCheckoutMode] = useState<CheckoutMode>('subscription');
-  const [selectedItem, setSelectedItem] = useState<CheckoutItem | null>(null);
-
-  // One-time purchase items
-  const checkoutItems: CheckoutItem[] = [
-    {
-      id: 'emergency_kit',
-      name: 'Emergency Rescue Kit',
-      description: 'Complete emergency kit with GPS tracker',
-      price: 9900, // $99.00 in cents
-      currency: 'usd',
-    },
-    {
-      id: 'premium_support_package',
-      name: 'Premium Support Package',
-      description: 'One-time premium support for 30 days',
-      price: 2900, // $29.00 in cents
-      currency: 'usd',
-    },
-  ];
 
   useEffect(() => {
     checkAuthStatus();
-    // Pre-select first item for one-time purchases
-    if (checkoutItems.length > 0) {
-      setSelectedItem(checkoutItems[0]);
-    }
   }, []);
 
   const checkAuthStatus = async () => {
@@ -137,121 +103,6 @@ export default function PremiumScreen() {
     }
   };
 
-  const handleOneTimePurchase = async () => {
-    if (!isLoggedIn) {
-      Alert.alert(
-        'Authentication Required',
-        'You must be logged in to complete checkout. Please create an account or sign in first.',
-        [{ text: 'OK' }]
-      );
-      return;
-    }
-
-    if (!selectedItem) {
-      Alert.alert('Error', 'Please select an item to purchase', [{ text: 'OK' }]);
-      return;
-    }
-
-    if (!cardComplete) {
-      Alert.alert('Error', 'Please enter valid card details', [{ text: 'OK' }]);
-      return;
-    }
-
-    try {
-      setIsProcessing(true);
-      console.log('Starting checkout process for item:', selectedItem.id);
-
-      // Call edge function to create payment intent
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const response = await fetch(
-        'https://yfvlxsqjvsbzbqsczuqt.supabase.co/functions/v1/create-payment-intent',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify({
-            amount: selectedItem.price,
-            currency: selectedItem.currency,
-            description: selectedItem.description,
-            metadata: {
-              item_id: selectedItem.id,
-              item_name: selectedItem.name,
-              user_id: userId,
-            },
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to create payment intent');
-      }
-
-      const { clientSecret, paymentIntentId } = result;
-
-      if (!clientSecret) {
-        throw new Error('Failed to get payment client secret');
-      }
-
-      console.log('Got client secret, confirming payment...');
-
-      // Confirm payment with Stripe
-      const { error, paymentIntent } = await confirmPayment(clientSecret, {
-        paymentMethodType: 'Card',
-      });
-
-      if (error) {
-        console.error('Payment confirmation error:', error);
-        throw new Error(error.message);
-      }
-
-      console.log('Payment confirmed:', paymentIntent?.status);
-
-      // Save payment to history
-      if (paymentIntent?.status === 'succeeded') {
-        await savePaymentHistory(paymentIntentId, selectedItem);
-      }
-
-      Alert.alert(
-        'Payment Successful! 🎉',
-        `Your payment of $${(selectedItem.price / 100).toFixed(2)} has been processed successfully. Thank you for your purchase!`,
-        [{ text: 'OK' }]
-      );
-    } catch (error: any) {
-      console.error('Checkout error:', error);
-      Alert.alert(
-        'Payment Failed',
-        error.message || 'Failed to process payment. Please try again.',
-        [{ text: 'OK' }]
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const savePaymentHistory = async (paymentIntentId: string, item: CheckoutItem) => {
-    try {
-      const { error } = await supabase.from('payment_history').insert({
-        user_id: userId,
-        stripe_payment_intent_id: paymentIntentId,
-        amount: item.price,
-        currency: item.currency,
-        status: 'succeeded',
-        payment_method: 'card',
-      });
-
-      if (error) {
-        console.error('Error saving payment history:', error);
-      }
-    } catch (error) {
-      console.error('Error saving payment history:', error);
-    }
-  };
-
   const handleManageSubscription = () => {
     Alert.alert(
       t('managePremium'),
@@ -300,11 +151,6 @@ export default function PremiumScreen() {
         },
       ]
     );
-  };
-
-  const formatPrice = (price: number, currency: string) => {
-    const amount = price / 100;
-    return `$${amount.toFixed(2)} ${currency.toUpperCase()}`;
   };
 
   const monthlyPlan = plans.find(p => p.interval === 'month');
@@ -487,161 +333,69 @@ export default function PremiumScreen() {
 
       {!isPremium && (
         <>
-          {/* Mode Selector */}
-          <View style={styles.card}>
-            <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Select Purchase Type</Text>
-            <View style={styles.modeSelector}>
-              <TouchableOpacity
-                style={[
-                  styles.modeButton,
-                  checkoutMode === 'subscription' && styles.selectedModeButton,
-                ]}
-                onPress={() => setCheckoutMode('subscription')}
-              >
-                <IconSymbol
-                  ios_icon_name="crown.fill"
-                  android_material_icon_name="workspace-premium"
-                  size={20}
-                  color={checkoutMode === 'subscription' ? colors.card : colors.text}
-                />
-                <Text
-                  style={[
-                    styles.modeButtonText,
-                    checkoutMode === 'subscription' && styles.selectedModeButtonText,
-                  ]}
-                >
-                  Subscription
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modeButton,
-                  checkoutMode === 'one-time' && styles.selectedModeButton,
-                ]}
-                onPress={() => setCheckoutMode('one-time')}
-              >
-                <IconSymbol
-                  ios_icon_name="cart.fill"
-                  android_material_icon_name="shopping-cart"
-                  size={20}
-                  color={checkoutMode === 'one-time' ? colors.card : colors.text}
-                />
-                <Text
-                  style={[
-                    styles.modeButtonText,
-                    checkoutMode === 'one-time' && styles.selectedModeButtonText,
-                  ]}
-                >
-                  One-Time Purchase
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
           {/* Subscription Plans */}
-          {checkoutMode === 'subscription' && (
-            <View style={styles.card}>
-              <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('pricing')}</Text>
+          <View style={styles.card}>
+            <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>{t('pricing')}</Text>
 
-              {monthlyPlan && (
-                <TouchableOpacity
-                  style={[
-                    styles.planCard,
-                    selectedPlanId === monthlyPlan.id && styles.selectedPlanCard,
-                  ]}
-                  onPress={() => setSelectedPlanId(monthlyPlan.id)}
-                >
-                  <View style={styles.planHeader}>
+            {monthlyPlan && (
+              <TouchableOpacity
+                style={[
+                  styles.planCard,
+                  selectedPlanId === monthlyPlan.id && styles.selectedPlanCard,
+                ]}
+                onPress={() => setSelectedPlanId(monthlyPlan.id)}
+              >
+                <View style={styles.planHeader}>
+                  <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
+                    {t('monthlyPlan')}
+                  </Text>
+                  {selectedPlanId === monthlyPlan.id && (
+                    <IconSymbol
+                      ios_icon_name="checkmark.circle.fill"
+                      android_material_icon_name="check-circle"
+                      size={24}
+                      color={colors.primary}
+                    />
+                  )}
+                </View>
+                <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
+                  {monthlyPlan.price_amount / 100} {monthlyPlan.price_currency.toUpperCase()}/month
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {yearlyPlan && (
+              <TouchableOpacity
+                style={[
+                  styles.planCard,
+                  selectedPlanId === yearlyPlan.id && styles.selectedPlanCard,
+                ]}
+                onPress={() => setSelectedPlanId(yearlyPlan.id)}
+              >
+                <View style={styles.planHeader}>
+                  <View>
                     <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
-                      {t('monthlyPlan')}
+                      {t('yearlyPlan')}
                     </Text>
-                    {selectedPlanId === monthlyPlan.id && (
-                      <IconSymbol
-                        ios_icon_name="checkmark.circle.fill"
-                        android_material_icon_name="check-circle"
-                        size={24}
-                        color={colors.primary}
-                      />
-                    )}
+                    <Text style={[styles.saveBadge, isRTL && styles.rtlText]}>
+                      {t('save2Months')}
+                    </Text>
                   </View>
-                  <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
-                    {monthlyPlan.price_amount / 100} {monthlyPlan.price_currency.toUpperCase()}/month
-                  </Text>
-                </TouchableOpacity>
-              )}
-
-              {yearlyPlan && (
-                <TouchableOpacity
-                  style={[
-                    styles.planCard,
-                    selectedPlanId === yearlyPlan.id && styles.selectedPlanCard,
-                  ]}
-                  onPress={() => setSelectedPlanId(yearlyPlan.id)}
-                >
-                  <View style={styles.planHeader}>
-                    <View>
-                      <Text style={[styles.planTitle, isRTL && styles.rtlText]}>
-                        {t('yearlyPlan')}
-                      </Text>
-                      <Text style={[styles.saveBadge, isRTL && styles.rtlText]}>
-                        {t('save2Months')}
-                      </Text>
-                    </View>
-                    {selectedPlanId === yearlyPlan.id && (
-                      <IconSymbol
-                        ios_icon_name="checkmark.circle.fill"
-                        android_material_icon_name="check-circle"
-                        size={24}
-                        color={colors.primary}
-                      />
-                    )}
-                  </View>
-                  <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
-                    {yearlyPlan.price_amount / 100} {yearlyPlan.price_currency.toUpperCase()}/year
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-
-          {/* One-Time Purchase Items */}
-          {checkoutMode === 'one-time' && (
-            <View style={styles.card}>
-              <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Select Item</Text>
-              {checkoutItems.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.itemCard,
-                    selectedItem?.id === item.id && styles.selectedItemCard,
-                  ]}
-                  onPress={() => setSelectedItem(item)}
-                >
-                  <View style={styles.itemHeader}>
-                    <View style={styles.itemInfo}>
-                      <Text style={[styles.itemName, isRTL && styles.rtlText]}>
-                        {item.name}
-                      </Text>
-                      <Text style={[styles.itemDescription, isRTL && styles.rtlText]}>
-                        {item.description}
-                      </Text>
-                    </View>
-                    {selectedItem?.id === item.id && (
-                      <IconSymbol
-                        ios_icon_name="checkmark.circle.fill"
-                        android_material_icon_name="check-circle"
-                        size={24}
-                        color={colors.primary}
-                      />
-                    )}
-                  </View>
-                  <Text style={[styles.itemPrice, isRTL && styles.rtlText]}>
-                    {formatPrice(item.price, item.currency)}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+                  {selectedPlanId === yearlyPlan.id && (
+                    <IconSymbol
+                      ios_icon_name="checkmark.circle.fill"
+                      android_material_icon_name="check-circle"
+                      size={24}
+                      color={colors.primary}
+                    />
+                  )}
+                </View>
+                <Text style={[styles.planPrice, isRTL && styles.rtlText]}>
+                  {yearlyPlan.price_amount / 100} {yearlyPlan.price_currency.toUpperCase()}/year
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
           {/* Payment Details */}
           <View style={styles.card}>
@@ -650,7 +404,7 @@ export default function PremiumScreen() {
               Enter your card information (Test Mode)
             </Text>
             <CardField
-              postalCodeEnabled={checkoutMode === 'one-time'}
+              postalCodeEnabled={false}
               placeholders={{
                 number: '4242 4242 4242 4242',
               }}
@@ -677,82 +431,29 @@ export default function PremiumScreen() {
             </View>
           </View>
 
-          {/* Order Summary for One-Time Purchases */}
-          {checkoutMode === 'one-time' && selectedItem && (
-            <View style={styles.card}>
-              <Text style={[styles.cardTitle, isRTL && styles.rtlText]}>Order Summary</Text>
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>Item:</Text>
-                <Text style={[styles.summaryValue, isRTL && styles.rtlText]}>
-                  {selectedItem.name}
-                </Text>
-              </View>
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel, isRTL && styles.rtlText]}>Subtotal:</Text>
-                <Text style={[styles.summaryValue, isRTL && styles.rtlText]}>
-                  {formatPrice(selectedItem.price, selectedItem.currency)}
-                </Text>
-              </View>
-              <View style={styles.divider} />
-              <View style={styles.summaryRow}>
-                <Text style={[styles.totalLabel, isRTL && styles.rtlText]}>Total:</Text>
-                <Text style={[styles.totalValue, isRTL && styles.rtlText]}>
-                  {formatPrice(selectedItem.price, selectedItem.currency)}
-                </Text>
-              </View>
-            </View>
-          )}
-
-          {/* Action Button */}
-          {checkoutMode === 'subscription' ? (
-            <TouchableOpacity
-              style={[
-                styles.subscribeButton,
-                (isProcessing || !selectedPlanId || !cardComplete) && styles.disabledButton,
-              ]}
-              onPress={handleSubscribe}
-              disabled={isProcessing || !selectedPlanId || !cardComplete}
-            >
-              {isProcessing ? (
-                <ActivityIndicator color={colors.card} />
-              ) : (
-                <>
-                  <IconSymbol
-                    ios_icon_name="crown.fill"
-                    android_material_icon_name="workspace-premium"
-                    size={24}
-                    color={colors.card}
-                  />
-                  <Text style={styles.subscribeButtonText}>{t('subscribeToPremium')}</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[
-                styles.checkoutButton,
-                (isProcessing || !selectedItem || !cardComplete || !isLoggedIn) && styles.disabledButton,
-              ]}
-              onPress={handleOneTimePurchase}
-              disabled={isProcessing || !selectedItem || !cardComplete || !isLoggedIn}
-            >
-              {isProcessing ? (
-                <ActivityIndicator color={colors.card} />
-              ) : (
-                <>
-                  <IconSymbol
-                    ios_icon_name="lock.fill"
-                    android_material_icon_name="lock"
-                    size={24}
-                    color={colors.card}
-                  />
-                  <Text style={styles.checkoutButtonText}>
-                    {selectedItem ? `Pay ${formatPrice(selectedItem.price, selectedItem.currency)}` : 'Select Item'}
-                  </Text>
-                </>
-              )}
-            </TouchableOpacity>
-          )}
+          {/* Subscribe Button */}
+          <TouchableOpacity
+            style={[
+              styles.subscribeButton,
+              (isProcessing || !selectedPlanId || !cardComplete) && styles.disabledButton,
+            ]}
+            onPress={handleSubscribe}
+            disabled={isProcessing || !selectedPlanId || !cardComplete}
+          >
+            {isProcessing ? (
+              <ActivityIndicator color={colors.card} />
+            ) : (
+              <>
+                <IconSymbol
+                  ios_icon_name="crown.fill"
+                  android_material_icon_name="workspace-premium"
+                  size={24}
+                  color={colors.card}
+                />
+                <Text style={styles.subscribeButtonText}>{t('subscribeToPremium')}</Text>
+              </>
+            )}
+          </TouchableOpacity>
 
           <View style={styles.securityBadge}>
             <IconSymbol
@@ -937,35 +638,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     lineHeight: 20,
   },
-  modeSelector: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  modeButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    gap: 8,
-  },
-  selectedModeButton: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  modeButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  selectedModeButtonText: {
-    color: colors.card,
-  },
   planCard: {
     backgroundColor: colors.background,
     borderRadius: 12,
@@ -1000,44 +672,6 @@ const styles = StyleSheet.create({
     color: colors.success,
     marginTop: 4,
   },
-  itemCard: {
-    backgroundColor: colors.background,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedItemCard: {
-    borderColor: colors.primary,
-    backgroundColor: colors.highlight,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
-  },
-  itemInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  itemDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  itemPrice: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.primary,
-  },
   cardField: {
     width: '100%',
     height: 50,
@@ -1055,36 +689,6 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     flex: 1,
   },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  summaryLabel: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  summaryValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: 12,
-  },
-  totalLabel: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  totalValue: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: colors.primary,
-  },
   subscribeButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1100,31 +704,10 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  checkoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 4,
-  },
   disabledButton: {
     opacity: 0.5,
   },
   subscribeButtonText: {
-    color: colors.card,
-    fontSize: 18,
-    fontWeight: '700',
-    marginLeft: 8,
-  },
-  checkoutButtonText: {
     color: colors.card,
     fontSize: 18,
     fontWeight: '700',

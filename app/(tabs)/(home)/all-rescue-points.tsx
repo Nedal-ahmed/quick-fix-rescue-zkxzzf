@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import * as Location from 'expo-location';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface RescuePoint {
   id: string;
@@ -93,6 +93,7 @@ const MOCK_RESCUE_POINTS: RescuePoint[] = [
 
 export default function AllRescuePointsScreen() {
   const { t, isRTL } = useLanguage();
+  const { colors } = useTheme();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [rescuePoints, setRescuePoints] = useState<RescuePoint[]>([]);
 
@@ -147,6 +148,8 @@ export default function AllRescuePointsScreen() {
       setRescuePoints(MOCK_RESCUE_POINTS);
     }
   };
+
+  const styles = createStyles(colors);
 
   return (
     <View style={styles.container}>
@@ -261,7 +264,7 @@ export default function AllRescuePointsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -275,8 +278,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: colors.card,
     borderBottomWidth: 1,
-    borderBottomColor: colors.background,
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.08)',
+    borderBottomColor: colors.border,
+    boxShadow: `0px 2px 4px ${colors.shadow}`,
     elevation: 2,
   },
   backButton: {
@@ -325,10 +328,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 1,
-    borderColor: 'rgba(41, 98, 255, 0.1)',
+    borderColor: colors.border,
   },
   pointHeader: {
     flexDirection: 'row',

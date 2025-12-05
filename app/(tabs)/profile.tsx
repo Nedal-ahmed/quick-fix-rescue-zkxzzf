@@ -9,12 +9,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ProfileScreen() {
   const { t, language, setLanguage, isRTL } = useLanguage();
+  const { colors, theme, themeMode, setThemeMode } = useTheme();
 
   const handleLanguageChange = async () => {
     const newLanguage = language === 'en' ? 'ar' : 'en';
@@ -35,6 +36,27 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleThemeChange = async () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    const themeName = newTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
+    
+    try {
+      console.log(`Changing theme from ${theme} to ${newTheme}`);
+      await setThemeMode(newTheme);
+      
+      Alert.alert(
+        'Theme Changed',
+        `Theme: ${themeName}`,
+        [{ text: t('ok') }]
+      );
+    } catch (error) {
+      console.error('Error changing theme:', error);
+      Alert.alert(t('error'), 'Failed to change theme');
+    }
+  };
+
+  const styles = createStyles(colors);
+
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
@@ -49,9 +71,45 @@ export default function ProfileScreen() {
         <Text style={[styles.title, isRTL && styles.rtlText]}>{t('profile')}</Text>
       </View>
 
-      <TouchableOpacity style={styles.languageCard} onPress={handleLanguageChange}>
-        <View style={styles.languageRow}>
-          <View style={styles.languageLeft}>
+      <TouchableOpacity style={styles.settingCard} onPress={handleThemeChange}>
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
+            <View style={styles.iconContainer}>
+              <IconSymbol
+                ios_icon_name={theme === 'dark' ? 'moon.fill' : 'sun.max.fill'}
+                android_material_icon_name={theme === 'dark' ? 'dark-mode' : 'light-mode'}
+                size={24}
+                color={colors.primary}
+              />
+            </View>
+            <View>
+              <Text style={[styles.settingLabel, isRTL && styles.rtlText]}>
+                Theme
+              </Text>
+              <Text style={[styles.settingSubtext, isRTL && styles.rtlText]}>
+                {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.settingRight}>
+            <View style={styles.settingBadge}>
+              <Text style={styles.settingValue}>
+                {theme === 'dark' ? '🌙' : '☀️'}
+              </Text>
+            </View>
+            <IconSymbol
+              ios_icon_name="chevron.right"
+              android_material_icon_name="chevron-right"
+              size={20}
+              color={colors.textSecondary}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.settingCard} onPress={handleLanguageChange}>
+        <View style={styles.settingRow}>
+          <View style={styles.settingLeft}>
             <View style={styles.iconContainer}>
               <IconSymbol
                 ios_icon_name="globe"
@@ -61,17 +119,17 @@ export default function ProfileScreen() {
               />
             </View>
             <View>
-              <Text style={[styles.languageLabel, isRTL && styles.rtlText]}>
+              <Text style={[styles.settingLabel, isRTL && styles.rtlText]}>
                 {t('language')}
               </Text>
-              <Text style={[styles.languageSubtext, isRTL && styles.rtlText]}>
+              <Text style={[styles.settingSubtext, isRTL && styles.rtlText]}>
                 {t('changeLanguage')}
               </Text>
             </View>
           </View>
-          <View style={styles.languageRight}>
-            <View style={styles.languageBadge}>
-              <Text style={styles.languageValue}>
+          <View style={styles.settingRight}>
+            <View style={styles.settingBadge}>
+              <Text style={styles.settingValue}>
                 {language === 'en' ? 'EN' : 'ع'}
               </Text>
             </View>
@@ -173,6 +231,12 @@ export default function ProfileScreen() {
             {language === 'en' ? 'English' : 'العربية'}
           </Text>
         </View>
+        <View style={styles.infoRow}>
+          <Text style={[styles.infoLabel, isRTL && styles.rtlText]}>Theme:</Text>
+          <Text style={[styles.infoValue, isRTL && styles.rtlText]}>
+            {theme === 'dark' ? 'Dark' : 'Light'}
+          </Text>
+        </View>
       </View>
 
       <View style={styles.card}>
@@ -206,7 +270,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.background,
@@ -228,22 +292,22 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: colors.text,
   },
-  languageCard: {
+  settingCard: {
     backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 2,
     borderColor: colors.primary,
   },
-  languageRow: {
+  settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  languageLeft: {
+  settingLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
@@ -257,23 +321,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 16,
   },
-  languageLabel: {
+  settingLabel: {
     fontSize: 18,
     fontWeight: '700',
     color: colors.text,
     marginBottom: 4,
   },
-  languageSubtext: {
+  settingSubtext: {
     fontSize: 13,
     color: colors.textSecondary,
     fontWeight: '500',
   },
-  languageRight: {
+  settingRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  languageBadge: {
+  settingBadge: {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -281,17 +345,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  languageValue: {
+  settingValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: colors.card,
   },
   card: {
     backgroundColor: colors.card,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 1,
     borderColor: colors.border,

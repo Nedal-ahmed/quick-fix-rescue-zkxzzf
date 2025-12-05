@@ -7,9 +7,9 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 /**
  * Universal PremiumScreen Component
@@ -21,6 +21,8 @@ import { useLanguage } from '@/contexts/LanguageContext';
  */
 export default function PremiumScreen() {
   const { t, isRTL } = useLanguage();
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -168,7 +170,7 @@ export default function PremiumScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.background,

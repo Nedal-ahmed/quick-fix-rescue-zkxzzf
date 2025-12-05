@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface RescuePoint {
   id: string;
@@ -38,6 +38,7 @@ const MOCK_RESCUE_POINTS: RescuePoint[] = [
 
 export default function HomeScreen() {
   const { t, isRTL } = useLanguage();
+  const { colors } = useTheme();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -161,6 +162,8 @@ export default function HomeScreen() {
   const handleViewAllRescuePoints = () => {
     router.push('/(tabs)/(home)/all-rescue-points');
   };
+
+  const styles = createStyles(colors);
 
   if (loading) {
     return (
@@ -377,7 +380,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.background,
@@ -470,7 +473,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 1,
     borderColor: colors.border,
@@ -605,7 +608,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 16,
     padding: 24,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 1,
     borderColor: colors.border,

@@ -1,19 +1,20 @@
 
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+// These are now just type definitions and will be overridden by theme context
 export const colors = {
-  background: '#F8F9FA',
-  text: '#1A1A1A',
-  textSecondary: '#6C757D',
-  primary: '#2962FF',
-  secondary: '#5E92F3',
-  accent: '#FF6B35',
-  card: '#FFFFFF',
-  highlight: '#FFF3E0',
-  error: '#DC3545',
-  success: '#28A745',
-  border: '#E9ECEF',
-  shadow: 'rgba(0, 0, 0, 0.08)',
+  background: '#0A0A0A',
+  text: '#FFFFFF',
+  textSecondary: '#A0A0A0',
+  primary: '#4D7FFF',
+  secondary: '#7BA3FF',
+  accent: '#FF8A5B',
+  card: '#1C1C1E',
+  highlight: '#2C2C2E',
+  error: '#FF453A',
+  success: '#32D74B',
+  border: '#38383A',
+  shadow: 'rgba(0, 0, 0, 0.3)',
 };
 
 export const buttonStyles = StyleSheet.create({

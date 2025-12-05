@@ -12,11 +12,12 @@ import {
   DarkTheme,
   DefaultTheme,
   Theme,
-  ThemeProvider,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -81,48 +82,48 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="auto" animated />
-      <ThemeProvider
-        value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
-      >
-        <LanguageProvider>
-          <WidgetProvider>
-            <GestureHandlerRootView>
-              <Stack>
-                {/* Main app with tabs */}
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <StatusBar style="light" animated />
+      <NavigationThemeProvider value={CustomDarkTheme}>
+        <ThemeProvider>
+          <LanguageProvider>
+            <WidgetProvider>
+              <GestureHandlerRootView>
+                <Stack>
+                  {/* Main app with tabs */}
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-                {/* Modal Demo Screens */}
-                <Stack.Screen
-                  name="modal"
-                  options={{
-                    presentation: "modal",
-                    title: "Standard Modal",
-                  }}
-                />
-                <Stack.Screen
-                  name="formsheet"
-                  options={{
-                    presentation: "formSheet",
-                    title: "Form Sheet Modal",
-                    sheetGrabberVisible: true,
-                    sheetAllowedDetents: [0.5, 0.8, 1.0],
-                    sheetCornerRadius: 20,
-                  }}
-                />
-                <Stack.Screen
-                  name="transparent-modal"
-                  options={{
-                    presentation: "transparentModal",
-                    headerShown: false,
-                  }}
-                />
-              </Stack>
-              <SystemBars style={"auto"} />
-            </GestureHandlerRootView>
-          </WidgetProvider>
-        </LanguageProvider>
-      </ThemeProvider>
+                  {/* Modal Demo Screens */}
+                  <Stack.Screen
+                    name="modal"
+                    options={{
+                      presentation: "modal",
+                      title: "Standard Modal",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="formsheet"
+                    options={{
+                      presentation: "formSheet",
+                      title: "Form Sheet Modal",
+                      sheetGrabberVisible: true,
+                      sheetAllowedDetents: [0.5, 0.8, 1.0],
+                      sheetCornerRadius: 20,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="transparent-modal"
+                    options={{
+                      presentation: "transparentModal",
+                      headerShown: false,
+                    }}
+                  />
+                </Stack>
+                <SystemBars style={"light"} />
+              </GestureHandlerRootView>
+            </WidgetProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </NavigationThemeProvider>
     </>
   );
 }

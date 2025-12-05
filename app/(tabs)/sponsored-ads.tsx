@@ -10,9 +10,9 @@ import {
   Image,
   Linking,
 } from 'react-native';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SponsoredAd {
   id: string;
@@ -95,6 +95,7 @@ const SPONSORED_ADS: SponsoredAd[] = [
 
 export default function SponsoredAdsScreen() {
   const { t, isRTL } = useLanguage();
+  const { colors } = useTheme();
 
   const handleAdPress = (ad: SponsoredAd) => {
     if (ad.website) {
@@ -103,6 +104,8 @@ export default function SponsoredAdsScreen() {
       });
     }
   };
+
+  const styles = createStyles(colors);
 
   const renderAdCard = (ad: SponsoredAd) => (
     <TouchableOpacity
@@ -233,7 +236,7 @@ export default function SponsoredAdsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: colors.background,
@@ -317,7 +320,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 16,
     overflow: 'hidden',
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 1,
     borderColor: colors.border,
@@ -399,7 +402,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 16,
     marginBottom: 16,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 3,
     borderWidth: 2,
     borderColor: colors.accent,

@@ -2,9 +2,12 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { colors } from '@/styles/commonStyles';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <View style={styles.tabBar}>
@@ -71,7 +74,7 @@ export default function FloatingTabBar({ state, descriptors, navigation }: Botto
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     position: 'absolute',
     bottom: 0,
@@ -88,8 +91,10 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
+    boxShadow: `0px 4px 12px ${colors.shadow}`,
     elevation: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   tab: {
     flex: 1,

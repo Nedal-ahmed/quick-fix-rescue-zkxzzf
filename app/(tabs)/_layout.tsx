@@ -2,13 +2,14 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
-import { colors } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 import FloatingTabBar from '@/components/FloatingTabBar';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function TabLayout() {
   const { t } = useLanguage();
+  const { colors } = useTheme();
 
   return (
     <Tabs

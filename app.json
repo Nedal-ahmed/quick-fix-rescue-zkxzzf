@@ -1,14 +1,15 @@
+
 {
   "expo": {
     "name": "Quick Fix",
-    "slug": "Quick Fix",
+    "slug": "quick-fix-rescue-zkxzzf",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/natively-dark.png",
+    "icon": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/natively-dark.png",
+      "image": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -23,18 +24,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/natively-dark.png",
+        "foregroundImage": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.Natively",
+      "package": "com.QuickFix.QuickFix",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
-      "favicon": "./assets/images/final_quest_240x240.png",
+      "favicon": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
       "bundler": "metro"
     },
     "plugins": [

@@ -2,7 +2,7 @@
 {
   "expo": {
     "name": "Quick Fix",
-    "slug": "quick-fix-rescue-zkxzzf",
+    "slug": "quick-fix",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Natively",
+      "bundleIdentifier": "com.quickfix.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue.",
@@ -28,7 +28,7 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.QuickFix.QuickFix",
+      "package": "com.quickfix.app",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
@@ -50,13 +50,12 @@
         }
       ]
     ],
-    "scheme": "natively",
+    "scheme": "quickfix",
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "router": {}
     }
-  },
-  "scheme": "Quick Fix"
+  }
 }

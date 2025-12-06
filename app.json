@@ -1,15 +1,14 @@
-
 {
   "expo": {
     "name": "Quick Fix",
     "slug": "quick-fix-rescue-zkxzzf",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
+    "icon": "./assets/images/6fb74441-7e5c-42f9-a3f4-155b5d9f5127.jpeg",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
+      "image": "./assets/images/6fb74441-7e5c-42f9-a3f4-155b5d9f5127.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -24,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
+        "foregroundImage": "./assets/images/6fb74441-7e5c-42f9-a3f4-155b5d9f5127.jpeg",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
@@ -35,7 +34,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/d32d6415-b1a6-4e8b-97ae-3aa12926a3ae.jpeg",
+      "favicon": "./assets/images/6fb74441-7e5c-42f9-a3f4-155b5d9f5127.jpeg",
       "bundler": "metro"
     },
     "plugins": [

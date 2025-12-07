@@ -1,15 +1,15 @@
 
 {
   "expo": {
-    "name": "QuickFix",
+    "name": "Quick Fix",
     "slug": "quick-fix-rescue-zkxzzf",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/final_quest_240x240.png",
+    "icon": "./assets/images/d5045954-ab41-488c-aa3b-0a753b81a1ea.jpeg",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/final_quest_240x240.png",
+      "image": "./assets/images/d5045954-ab41-488c-aa3b-0a753b81a1ea.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -24,18 +24,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/final_quest_240x240.png",
+        "foregroundImage": "./assets/images/d5045954-ab41-488c-aa3b-0a753b81a1ea.jpeg",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.quickfixapp.quickfix",
+      "package": "com.nedal.quickfix",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
-      "favicon": "./assets/images/final_quest_240x240.png",
+      "favicon": "./assets/images/d5045954-ab41-488c-aa3b-0a753b81a1ea.jpeg",
       "bundler": "metro"
     },
     "plugins": [
@@ -64,5 +64,6 @@
     "extra": {
       "router": {}
     }
-  }
+  },
+  "scheme": "Quick Fix"
 }

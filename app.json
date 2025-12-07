@@ -5,11 +5,11 @@
     "slug": "QuickFix",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/natively-dark.png",
+    "icon": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/natively-dark.png",
+      "image": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/natively-dark.png",
+        "foregroundImage": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
@@ -35,7 +35,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/final_quest_240x240.png",
+      "favicon": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
       "bundler": "metro"
     },
     "plugins": [

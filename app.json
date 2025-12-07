@@ -2,20 +2,20 @@
 {
   "expo": {
     "name": "QuickFix",
-    "slug": "QuickFix",
+    "slug": "quickfix",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
+    "icon": "./assets/images/final_quest_240x240.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
+      "image": "./assets/images/final_quest_240x240.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.Natively",
+      "bundleIdentifier": "com.quickfix.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "QuickFix needs your location to show you the nearest rescue point and send your location for emergency rescue.",
@@ -24,18 +24,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
+        "foregroundImage": "./assets/images/final_quest_240x240.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.Natively",
+      "package": "com.quickfix.app",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
-      "favicon": "./assets/images/134d9769-8d0e-40b8-818d-a48eb6ac6c4c.jpeg",
+      "favicon": "./assets/images/final_quest_240x240.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -50,13 +50,12 @@
         }
       ]
     ],
-    "scheme": "natively",
+    "scheme": "quickfix",
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "router": {}
     }
-  },
-  "scheme": "QuickFix"
+  }
 }

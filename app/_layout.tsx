@@ -87,7 +87,7 @@ export default function RootLayout() {
         <ThemeProvider>
           <LanguageProvider>
             <WidgetProvider>
-              <GestureHandlerRootView>
+              <GestureHandlerRootView style={{ flex: 1 }}>
                 <Stack>
                   {/* Main app with tabs */}
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

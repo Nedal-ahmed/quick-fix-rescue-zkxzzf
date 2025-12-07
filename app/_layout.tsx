@@ -82,8 +82,8 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="auto" animated />
-      <NavigationThemeProvider value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}>
+      <StatusBar style="light" animated />
+      <NavigationThemeProvider value={CustomDarkTheme}>
         <ThemeProvider>
           <LanguageProvider>
             <WidgetProvider>
@@ -118,7 +118,7 @@ export default function RootLayout() {
                     }}
                   />
                 </Stack>
-                <SystemBars style={"auto"} />
+                <SystemBars style={"light"} />
               </GestureHandlerRootView>
             </WidgetProvider>
           </LanguageProvider>

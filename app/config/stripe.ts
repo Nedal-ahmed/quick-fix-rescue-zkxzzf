@@ -25,7 +25,7 @@ export const STRIPE_PUBLISHABLE_KEY = __DEV__
   : STRIPE_PUBLISHABLE_KEY_LIVE;
 
 // Merchant identifier for Apple Pay (iOS only)
-export const STRIPE_MERCHANT_IDENTIFIER = "merchant.com.quickfix.app";
+export const STRIPE_MERCHANT_IDENTIFIER = "merchant.com.anonymous.Natively";
 
 // URL scheme for return URLs
-export const STRIPE_URL_SCHEME = "quickfix";
+export const STRIPE_URL_SCHEME = "natively";

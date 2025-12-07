@@ -2,7 +2,7 @@
 {
   "expo": {
     "name": "QuickFix",
-    "slug": "quickfix",
+    "slug": "quick-fix-rescue-zkxzzf",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/final_quest_240x240.png",
@@ -28,7 +28,7 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.quickfix.app",
+      "package": "com.quickfixapp.quickfix",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
@@ -47,6 +47,13 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "QuickFix needs your location to show you the nearest rescue point and send your location for emergency rescue."
+        }
+      ],
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.quickfix.app",
+          "enableGooglePay": true
         }
       ]
     ],

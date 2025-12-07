@@ -1,41 +1,40 @@
-
 {
   "expo": {
-    "name": "QuickFix",
-    "slug": "QuickFix",
+    "name": "Quick Fix",
+    "slug": "Quick Fix",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/81f3ceb8-eb0c-4da3-8067-08817a486f73.jpeg",
+    "icon": "./assets/images/natively-dark.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/81f3ceb8-eb0c-4da3-8067-08817a486f73.jpeg",
+      "image": "./assets/images/natively-dark.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.quickfix.app",
+      "bundleIdentifier": "com.anonymous.Natively",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSLocationWhenInUseUsageDescription": "QuickFix needs your location to show you the nearest rescue point and send your location for emergency rescue.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "QuickFix needs your location to show you the nearest rescue point and send your location for emergency rescue."
+        "NSLocationWhenInUseUsageDescription": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/81f3ceb8-eb0c-4da3-8067-08817a486f73.jpeg",
+        "foregroundImage": "./assets/images/natively-dark.png",
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.quickfix.app",
+      "package": "com.anonymous.Natively",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
-      "favicon": "./assets/images/81f3ceb8-eb0c-4da3-8067-08817a486f73.jpeg",
+      "favicon": "./assets/images/final_quest_240x240.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -46,11 +45,11 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "QuickFix needs your location to show you the nearest rescue point and send your location for emergency rescue."
+          "locationAlwaysAndWhenInUsePermission": "Quick Fix needs your location to show you the nearest rescue point and send your location for emergency rescue."
         }
       ]
     ],
-    "scheme": "quickfix",
+    "scheme": "natively",
     "experiments": {
       "typedRoutes": true
     },
@@ -58,5 +57,5 @@
       "router": {}
     }
   },
-  "scheme": "quickfix"
+  "scheme": "Quick Fix"
 }
